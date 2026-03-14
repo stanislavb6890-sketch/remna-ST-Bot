@@ -6,7 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Trophy, Plus, Pencil, Trash2, Loader2, Users, Shuffle, X, Send, Clock } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Trophy, Plus, Pencil, Trash2, Loader2, Users, Shuffle, Send, Clock, X } from "lucide-react";
 
 const PRIZE_TYPES: { value: ContestPrizeType; label: string }[] = [
   { value: "custom", label: "Свой текст" },
@@ -282,15 +290,13 @@ export function ContestsPage() {
         </div>
       )}
 
-      {showForm && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>{editingId ? "Редактировать конкурс" : "Новый конкурс"}</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => setShowForm(false)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <Dialog open={showForm} onOpenChange={(open) => !open && setShowForm(false)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingId ? "Редактировать конкурс" : "Новый конкурс"}</DialogTitle>
+            <DialogDescription className="sr-only">Форма создания и редактирования конкурса</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
             <div className="grid gap-2">
               <Label>Название</Label>
               <Input
@@ -320,7 +326,7 @@ export function ContestsPage() {
             <div className="grid gap-2">
               <Label>Тип розыгрыша</Label>
               <select
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm"
                 value={form.drawType}
                 onChange={(e) => setForm((f) => ({ ...f, drawType: e.target.value as ContestDrawType }))}
               >
@@ -372,7 +378,7 @@ export function ContestsPage() {
                 <div className="grid gap-2">
                   <Label>Приз {place} место — тип</Label>
                   <select
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm"
                     value={form[`prize${place}Type` as keyof ContestFormPayload] as string}
                     onChange={(e) => setForm((f) => ({ ...f, [`prize${place}Type`]: e.target.value as ContestPrizeType }))}
                   >
@@ -400,13 +406,18 @@ export function ContestsPage() {
                 placeholder="Сообщение, которое бот будет отправлять каждый день во время конкурса"
               />
             </div>
-            <Button onClick={handleSave} disabled={saving}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              {editingId ? "Сохранить" : "Создать"}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                Отмена
+              </Button>
+              <Button onClick={handleSave} disabled={saving}>
+                {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {editingId ? "Сохранить" : "Создать"}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {loading ? (
         <div className="flex items-center justify-center py-12">

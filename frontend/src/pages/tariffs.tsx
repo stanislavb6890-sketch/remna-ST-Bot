@@ -18,7 +18,6 @@ import {
   FolderOpen,
   CreditCard,
   Loader2,
-  X,
   ChevronDown,
   Check,
   GripVertical,
@@ -31,6 +30,14 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   arrayMove,
   SortableContext,
@@ -533,14 +540,12 @@ function CategoryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90" onClick={onClose}>
-      <div className="bg-card-solid border rounded-lg shadow-lg w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">{isEdit ? "Редактировать категорию" : "Новая категория"}</h2>
-          <button type="button" onClick={onClose} className="p-1 rounded hover:bg-muted">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? "Редактировать категорию" : "Новая категория"}</DialogTitle>
+          <DialogDescription className="sr-only">Форма категории</DialogDescription>
+        </DialogHeader>
         <form onSubmit={submit}>
           <Label htmlFor="cat-name">Название категории</Label>
           <Input
@@ -562,16 +567,16 @@ function CategoryModal({
             <option value="ordinary">ordinary — 📦</option>
             <option value="premium">premium — ⭐</option>
           </select>
-          <div className="flex justify-end gap-2">
+          <DialogFooter className="mt-4">
             <Button type="button" variant="outline" onClick={onClose}>Отмена</Button>
             <Button type="submit" disabled={saving}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               {isEdit ? "Сохранить" : "Создать"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -705,14 +710,12 @@ function TariffModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 overflow-y-auto py-8" onClick={onClose}>
-      <div className="bg-card-solid border rounded-lg shadow-lg w-full max-w-lg p-6 my-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">{isEdit ? "Редактировать тариф" : "Новый тариф"}</h2>
-          <button type="button" onClick={onClose} className="p-1 rounded hover:bg-muted">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? "Редактировать тариф" : "Новый тариф"}</DialogTitle>
+          <DialogDescription className="sr-only">Форма тарифа</DialogDescription>
+        </DialogHeader>
         <form onSubmit={submit} className="space-y-4">
           <div>
             <Label htmlFor="tariff-name">Название</Label>
@@ -722,6 +725,7 @@ function TariffModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="Например: 30 дней, 1 год"
               required
+              className="mt-1"
             />
           </div>
           <div>
@@ -733,7 +737,7 @@ function TariffModal({
               placeholder="Краткое описание тарифа для клиентов"
               rows={3}
               maxLength={5000}
-              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-1 flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
           <div>
@@ -745,6 +749,7 @@ function TariffModal({
               max={3650}
               value={durationDays}
               onChange={(e) => setDurationDays(parseInt(e.target.value, 10) || 1)}
+              className="mt-1"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -757,6 +762,7 @@ function TariffModal({
                 step={0.01}
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
+                className="mt-1"
               />
             </div>
             <div>
@@ -765,7 +771,7 @@ function TariffModal({
                 id="tariff-currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 {CURRENCIES.map((c) => (
                   <option key={c.value} value={c.value}>
@@ -777,7 +783,7 @@ function TariffModal({
           </div>
           <div ref={squadsRef} className="relative">
             <Label>Сквады (Remna)</Label>
-            <p className="text-xs text-muted-foreground mb-1.5">Один или несколько внутренних сквадов</p>
+            <p className="text-xs text-muted-foreground mb-1.5 mt-1">Один или несколько внутренних сквадов</p>
             {squads.length === 0 ? (
               <div className="flex h-10 items-center rounded-md border border-input bg-muted/30 px-3 text-sm text-muted-foreground">
                 Список сквадов пуст или Remna не настроен
@@ -835,6 +841,7 @@ function TariffModal({
               value={trafficGb}
               onChange={(e) => setTrafficGb(e.target.value)}
               placeholder="Не ограничено"
+              className="mt-1"
             />
             <p className="text-xs text-muted-foreground mt-1">1 ГБ = 1024³ байт (ГиБ). В Remna передаётся лимит в байтах.</p>
           </div>
@@ -847,17 +854,18 @@ function TariffModal({
               value={deviceLimit}
               onChange={(e) => setDeviceLimit(e.target.value)}
               placeholder="Не ограничено"
+              className="mt-1"
             />
           </div>
-          <div className="flex justify-end gap-2 pt-2">
+          <DialogFooter className="mt-4">
             <Button type="button" variant="outline" onClick={onClose}>Отмена</Button>
             <Button type="submit" disabled={saving || selectedSquadUuids.length === 0}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               {isEdit ? "Сохранить" : "Создать"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

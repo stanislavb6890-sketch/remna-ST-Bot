@@ -9,7 +9,18 @@ import { distributeReferralRewards } from "../referral/referral.service.js";
 import { activateTariffByPaymentId } from "../tariff/tariff-activation.service.js";
 import { createProxySlotsByPaymentId } from "../proxy/proxy-slots-activation.service.js";
 import { createSingboxSlotsByPaymentId } from "../singbox/singbox-slots-activation.service.js";
+import { applyExtraOptionByPaymentId } from "../extra-options/extra-options.service.js";
 import { notifyProxySlotsCreated, notifySingboxSlotsCreated } from "../notification/telegram-notify.service.js";
+
+function hasExtraOptionInMetadata(metadata: string | null): boolean {
+  if (!metadata?.trim()) return false;
+  try {
+    const obj = JSON.parse(metadata) as Record<string, unknown>;
+    return obj?.extraOption != null && typeof obj.extraOption === "object";
+  } catch {
+    return false;
+  }
+}
 
 export type MarkPaymentPaidResult = {
   ok: boolean;
@@ -32,11 +43,13 @@ export async function markPaymentPaid(paymentId: string): Promise<MarkPaymentPai
     return { ok: true, payment: updated ?? payment, referral: result };
   }
   const now = new Date();
+  const isExtraOption = hasExtraOptionInMetadata(payment.metadata);
   const isTopUp =
     (payment.provider === "yoomoney_form" || payment.provider === "platega" || payment.provider === "yookassa") &&
     !payment.tariffId &&
     !payment.proxyTariffId &&
-    !payment.singboxTariffId;
+    !payment.singboxTariffId &&
+    !isExtraOption;
   if (isTopUp) {
     await prisma.$transaction([
       prisma.payment.update({
@@ -57,7 +70,10 @@ export async function markPaymentPaid(paymentId: string): Promise<MarkPaymentPai
 
   let activation: { ok: boolean; error?: string } = { ok: false, error: "no tariff" };
   let proxySlots: { ok: boolean; slotsCreated?: number; error?: string } = { ok: false };
-  if (payment.tariffId) {
+  if (isExtraOption) {
+    const extraResult = await applyExtraOptionByPaymentId(paymentId);
+    activation = extraResult.ok ? { ok: true } : { ok: false, error: (extraResult as { error?: string }).error };
+  } else if (payment.tariffId) {
     activation = await activateTariffByPaymentId(paymentId);
   } else if (payment.proxyTariffId) {
     const proxyResult = await createProxySlotsByPaymentId(paymentId);

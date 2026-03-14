@@ -12,11 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Plus,
   Pencil,
   Trash2,
   Loader2,
-  X,
   Copy,
   Check,
   Users,
@@ -401,172 +408,177 @@ export function PromoCodesPage() {
       )}
 
       {/* Create / Edit modal */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
-          <Card className="w-full max-w-lg mx-4 shadow-2xl max-h-[90vh] overflow-y-auto bg-card-solid">
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-lg">{editingId ? "Редактировать" : "Создать"} промокод</CardTitle>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowForm(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {!editingId && (
-                <div>
-                  <Label>Код промокода</Label>
-                  <Input
-                    value={form.code}
-                    onChange={(e) => setForm((f) => ({ ...f, code: e.target.value.toUpperCase().replace(/\s/g, "") }))}
-                    placeholder="SUMMER2026"
-                    className="font-mono"
-                  />
-                </div>
-              )}
+      <Dialog open={showForm} onOpenChange={(open) => !open && setShowForm(false)}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingId ? "Редактировать" : "Создать"} промокод</DialogTitle>
+            <DialogDescription className="sr-only">Форма промокода</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {!editingId && (
               <div>
-                <Label>Название / описание</Label>
+                <Label>Код промокода</Label>
                 <Input
-                  value={form.name}
-                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                  placeholder="Летняя акция -20%"
+                  value={form.code}
+                  onChange={(e) => setForm((f) => ({ ...f, code: e.target.value.toUpperCase().replace(/\s/g, "") }))}
+                  placeholder="SUMMER2026"
+                  className="mt-1 font-mono"
                 />
               </div>
-              <div>
-                <Label>Тип</Label>
-                <select
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  value={form.type}
-                  onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as "DISCOUNT" | "FREE_DAYS" }))}
-                >
-                  <option value="DISCOUNT">Скидка</option>
-                  <option value="FREE_DAYS">Бесплатные дни</option>
-                </select>
-              </div>
+            )}
+            <div>
+              <Label>Название / описание</Label>
+              <Input
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                placeholder="Летняя акция -20%"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label>Тип</Label>
+              <select
+                className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                value={form.type}
+                onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as "DISCOUNT" | "FREE_DAYS" }))}
+              >
+                <option value="DISCOUNT">Скидка</option>
+                <option value="FREE_DAYS">Бесплатные дни</option>
+              </select>
+            </div>
 
-              {form.type === "DISCOUNT" && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Скидка %</Label>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={form.discountPercent ?? ""}
-                      onChange={(e) => setForm((f) => ({ ...f, discountPercent: e.target.value === "" ? null : Number(e.target.value) }))}
-                      placeholder="20"
-                    />
-                  </div>
-                  <div>
-                    <Label>Фикс. скидка (валюта)</Label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={form.discountFixed ?? ""}
-                      onChange={(e) => setForm((f) => ({ ...f, discountFixed: e.target.value === "" ? null : Number(e.target.value) }))}
-                      placeholder="100"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {form.type === "FREE_DAYS" && (
-                <>
-                  <div>
-                    <Label>Сквад</Label>
-                    <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      value={form.squadUuid ?? ""}
-                      onChange={(e) => setForm((f) => ({ ...f, squadUuid: e.target.value || null }))}
-                    >
-                      <option value="">Выберите сквад</option>
-                      {squads.map((s) => (
-                        <option key={s.uuid} value={s.uuid}>{s.name || s.uuid}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>Дней подписки</Label>
-                      <Input
-                        type="number"
-                        min={1}
-                        value={form.durationDays ?? ""}
-                        onChange={(e) => setForm((f) => ({ ...f, durationDays: e.target.value === "" ? null : Number(e.target.value) || 1 }))}
-                      />
-                    </div>
-                    <div>
-                      <Label>Трафик (ГБ, 0 = без лимита)</Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        value={Number(form.trafficLimitBytes ?? 0) / (1024 * 1024 * 1024) || 0}
-                        onChange={(e) => setForm((f) => ({ ...f, trafficLimitBytes: String(Math.round((Number(e.target.value) || 0) * 1024 * 1024 * 1024)) }))}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label>Лимит устройств (пусто = без лимита)</Label>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={form.deviceLimit ?? ""}
-                      onChange={(e) => setForm((f) => ({ ...f, deviceLimit: e.target.value === "" ? null : Number(e.target.value) || 0 }))}
-                    />
-                  </div>
-                </>
-              )}
-
+            {form.type === "DISCOUNT" && (
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Макс. использований (0 = ∞)</Label>
+                  <Label>Скидка %</Label>
                   <Input
                     type="number"
                     min={0}
-                    value={form.maxUses}
-                    onChange={(e) => setForm((f) => ({ ...f, maxUses: Number(e.target.value) || 0 }))}
+                    max={100}
+                    value={form.discountPercent ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, discountPercent: e.target.value === "" ? null : Number(e.target.value) }))}
+                    placeholder="20"
+                    className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label>Макс. на клиента</Label>
+                  <Label>Фикс. скидка (валюта)</Label>
                   <Input
                     type="number"
-                    min={1}
-                    value={form.maxUsesPerClient}
-                    onChange={(e) => setForm((f) => ({ ...f, maxUsesPerClient: Number(e.target.value) || 1 }))}
+                    min={0}
+                    value={form.discountFixed ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, discountFixed: e.target.value === "" ? null : Number(e.target.value) }))}
+                    placeholder="100"
+                    className="mt-1"
                   />
                 </div>
               </div>
+            )}
 
+            {form.type === "FREE_DAYS" && (
+              <>
+                <div>
+                  <Label>Сквад</Label>
+                  <select
+                    className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    value={form.squadUuid ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, squadUuid: e.target.value || null }))}
+                  >
+                    <option value="">Выберите сквад</option>
+                    {squads.map((s) => (
+                      <option key={s.uuid} value={s.uuid}>{s.name || s.uuid}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Дней подписки</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={form.durationDays ?? ""}
+                      onChange={(e) => setForm((f) => ({ ...f, durationDays: e.target.value === "" ? null : Number(e.target.value) || 1 }))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label>Трафик (ГБ, 0 = без лимита)</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={Number(form.trafficLimitBytes ?? 0) / (1024 * 1024 * 1024) || 0}
+                      onChange={(e) => setForm((f) => ({ ...f, trafficLimitBytes: String(Math.round((Number(e.target.value) || 0) * 1024 * 1024 * 1024)) }))}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>Лимит устройств (пусто = без лимита)</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={form.deviceLimit ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, deviceLimit: e.target.value === "" ? null : Number(e.target.value) || 0 }))}
+                    className="mt-1"
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Истекает (пусто = бессрочно)</Label>
+                <Label>Макс. использований (0 = ∞)</Label>
                 <Input
-                  type="date"
-                  value={form.expiresAt ? form.expiresAt.split("T")[0] : ""}
-                  onChange={(e) => setForm((f) => ({ ...f, expiresAt: e.target.value ? new Date(e.target.value).toISOString() : null }))}
+                  type="number"
+                  min={0}
+                  value={form.maxUses}
+                  onChange={(e) => setForm((f) => ({ ...f, maxUses: Number(e.target.value) || 0 }))}
+                  className="mt-1"
                 />
               </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={form.isActive ?? true}
-                  onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-                  className="rounded"
-                  id="code-active"
+              <div>
+                <Label>Макс. на клиента</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={form.maxUsesPerClient}
+                  onChange={(e) => setForm((f) => ({ ...f, maxUsesPerClient: Number(e.target.value) || 1 }))}
+                  className="mt-1"
                 />
-                <Label htmlFor="code-active">Активен</Label>
               </div>
+            </div>
 
-              <div className="flex justify-end gap-2 pt-2">
-                <Button variant="outline" onClick={() => setShowForm(false)}>Отмена</Button>
-                <Button onClick={handleSave} disabled={saving || !form.name.trim() || (!editingId && !form.code.trim())}>
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                  {editingId ? "Сохранить" : "Создать"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            <div>
+              <Label>Истекает (пусто = бессрочно)</Label>
+              <Input
+                type="date"
+                value={form.expiresAt ? form.expiresAt.split("T")[0] : ""}
+                onChange={(e) => setForm((f) => ({ ...f, expiresAt: e.target.value ? new Date(e.target.value).toISOString() : null }))}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <input
+                type="checkbox"
+                checked={form.isActive ?? true}
+                onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
+                className="rounded"
+                id="code-active"
+              />
+              <Label htmlFor="code-active">Активен</Label>
+            </div>
+
+            <DialogFooter className="mt-4">
+              <Button variant="outline" onClick={() => setShowForm(false)}>Отмена</Button>
+              <Button onClick={handleSave} disabled={saving || !form.name.trim() || (!editingId && !form.code.trim())}>
+                {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                {editingId ? "Сохранить" : "Создать"}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

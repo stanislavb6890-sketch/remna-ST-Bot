@@ -10,6 +10,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { CalendarClock, Plus, Play, Trash2, Pencil, Loader2, Clock } from "lucide-react";
 
 const TRIGGER_LABELS: Record<AutoBroadcastTriggerType, string> = {
@@ -320,16 +328,13 @@ export function AutoBroadcastPage() {
         </CardContent>
       </Card>
 
-      {showForm && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>{editingId ? "Редактировать правило" : "Новое правило"}</CardTitle>
-            <Button variant="ghost" size="sm" onClick={closeForm}>
-              Закрыть
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSave} className="space-y-4">
+      <Dialog open={showForm} onOpenChange={(open) => !open && closeForm()}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingId ? "Редактировать правило" : "Новое правило"}</DialogTitle>
+            <DialogDescription className="sr-only">Форма правила авторассылки</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSave} className="space-y-4 py-4">
               {formError && (
                 <p className="text-sm text-destructive rounded bg-destructive/10 px-3 py-2">{formError}</p>
               )}
@@ -345,7 +350,7 @@ export function AutoBroadcastPage() {
                 <div className="space-y-2">
                   <Label>Триггер</Label>
                   <select
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     value={form.triggerType}
                     onChange={(e) => {
                     const t = e.target.value as AutoBroadcastTriggerType;
@@ -395,7 +400,7 @@ export function AutoBroadcastPage() {
                 <div className="space-y-2">
                   <Label>Канал</Label>
                   <select
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     value={form.channel}
                     onChange={(e) => setForm((f) => ({ ...f, channel: e.target.value as "telegram" | "email" | "both" }))}
                   >
@@ -418,7 +423,7 @@ export function AutoBroadcastPage() {
               <div className="space-y-2">
                 <Label>Текст сообщения</Label>
                 <textarea
-                  className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm"
+                  className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={form.message}
                   onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                   placeholder="Текст для Telegram / email (до 4096 символов)"
@@ -436,19 +441,18 @@ export function AutoBroadcastPage() {
                 />
                 <Label htmlFor="form-enabled">Включено (участвует в запуске «Запустить все»)</Label>
               </div>
-              <div className="flex gap-2">
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={closeForm}>
+                  Отмена
+                </Button>
                 <Button type="submit" disabled={formSaving}>
                   {formSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   {editingId ? "Сохранить" : "Создать"}
                 </Button>
-                <Button type="button" variant="outline" onClick={closeForm}>
-                  Отмена
-                </Button>
-              </div>
+              </DialogFooter>
             </form>
-          </CardContent>
-        </Card>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

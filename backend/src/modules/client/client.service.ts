@@ -133,6 +133,7 @@ const SYSTEM_CONFIG_KEYS = [
   "landing_premium_service_title", "landing_premium_service_para1", "landing_premium_service_para2",
   "landing_how_it_works_title", "landing_how_it_works_desc",
   "landing_stats_platforms", "landing_stats_tariffs_label", "landing_stats_access_label", "landing_stats_payment_methods",
+  "landing_ready_to_connect_eyebrow", "landing_ready_to_connect_title", "landing_ready_to_connect_desc",
 ];
 
 /** Продукт «Доп. трафик»: объём в ГБ, цена, валюта */
@@ -600,6 +601,9 @@ export async function getSystemConfig() {
     landingStatsTariffsLabel: (map.landing_stats_tariffs_label ?? "").trim() || null,
     landingStatsAccessLabel: (map.landing_stats_access_label ?? "").trim() || null,
     landingStatsPaymentMethods: (map.landing_stats_payment_methods ?? "").trim() || null,
+    landingReadyToConnectEyebrow: (map.landing_ready_to_connect_eyebrow ?? "").trim() || null,
+    landingReadyToConnectTitle: (map.landing_ready_to_connect_title ?? "").trim() || null,
+    landingReadyToConnectDesc: (map.landing_ready_to_connect_desc ?? "").trim() || null,
   };
 }
 
@@ -1043,6 +1047,9 @@ export async function getPublicConfig() {
         landingStatsTariffsLabel?: string | null;
         landingStatsAccessLabel?: string | null;
         landingStatsPaymentMethods?: string | null;
+        landingReadyToConnectEyebrow?: string | null;
+        landingReadyToConnectTitle?: string | null;
+        landingReadyToConnectDesc?: string | null;
       };
       if (!l.landingEnabled) return null;
       const parseJsonArray = <T>(raw: string | null | undefined, guard: (x: unknown) => x is T): T[] => {
@@ -1170,6 +1177,9 @@ export async function getPublicConfig() {
         statsTariffsLabel: (l.landingStatsTariffsLabel ?? "").trim() || null,
         statsAccessLabel: (l.landingStatsAccessLabel ?? "").trim() || null,
         statsPaymentMethods: (l.landingStatsPaymentMethods ?? "").trim() || null,
+        readyToConnectEyebrow: (l.landingReadyToConnectEyebrow ?? "").trim() || null,
+        readyToConnectTitle: (l.landingReadyToConnectTitle ?? "").trim() || null,
+        readyToConnectDesc: (l.landingReadyToConnectDesc ?? "").trim() || null,
       };
     })(),
   };

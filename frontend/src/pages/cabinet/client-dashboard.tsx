@@ -465,29 +465,29 @@ export function ClientDashboardPage() {
 
           <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0 min-w-[240px]">
             {showTrial ? (
-              <Button size="lg" className="w-full gap-2 shadow-xl bg-green-600 hover:bg-green-700 text-white rounded-xl h-14 hover:scale-105 transition-transform" onClick={activateTrial} disabled={trialLoading}>
+              <Button size="lg" className="w-full gap-2 shadow-xl bg-green-600 hover:bg-green-700 text-white rounded-xl h-14 hover:scale-105 transition-transform [&_svg]:self-center [&_span]:leading-none" onClick={activateTrial} disabled={trialLoading}>
                 {trialLoading ? <Loader2 className="h-5 w-5 shrink-0 animate-spin" /> : <Gift className="h-5 w-5 shrink-0" />}
-                <span className="text-base font-medium">Бесплатный триал</span>
+                <span className="inline-flex items-center text-base font-medium leading-none">Бесплатный триал</span>
               </Button>
             ) : vpnUrl ? (
-              <Button size="lg" className="w-full gap-2 shadow-xl rounded-xl h-14 hover:scale-105 transition-transform bg-primary text-primary-foreground" asChild>
-                <Link to="/cabinet/subscribe">
+              <Button size="lg" className="w-full gap-2 shadow-xl rounded-xl h-14 hover:scale-105 transition-transform bg-primary text-primary-foreground [&_svg]:self-center [&_span]:leading-none" asChild>
+                <Link to="/cabinet/subscribe" className="inline-flex items-center justify-center gap-2 leading-none">
                   <Wifi className="h-5 w-5 shrink-0" />
-                  <span className="text-base font-medium">Настроить VPN</span>
+                  <span className="inline-flex items-center text-base font-medium leading-none">Настроить VPN</span>
                 </Link>
               </Button>
             ) : (
-              <Button size="lg" variant="default" className="w-full gap-2 shadow-xl rounded-xl h-14 hover:scale-105 transition-transform" asChild>
-                <Link to="/cabinet/tariffs">
+              <Button size="lg" variant="default" className="w-full gap-2 shadow-xl rounded-xl h-14 hover:scale-105 transition-transform [&_svg]:self-center [&_span]:leading-none" asChild>
+                <Link to="/cabinet/tariffs" className="inline-flex items-center justify-center gap-2 leading-none">
                   <Package className="h-5 w-5 shrink-0" />
-                  <span className="text-base font-medium">Выбрать тариф</span>
+                  <span className="inline-flex items-center text-base font-medium leading-none">Выбрать тариф</span>
                 </Link>
               </Button>
             )}
-            <Button variant="secondary" size="lg" className="w-full gap-2 rounded-xl h-14 hover:scale-105 transition-transform bg-background/50 hover:bg-background/80 border border-border/50" asChild>
-              <Link to="/cabinet/profile#topup">
+            <Button variant="secondary" size="lg" className="w-full gap-2 rounded-xl h-14 hover:scale-105 transition-transform bg-background/50 hover:bg-background/80 border border-border/50 [&_svg]:self-center [&_span]:leading-none" asChild>
+              <Link to="/cabinet/profile#topup" className="inline-flex items-center justify-center gap-2 leading-none">
                 <PlusCircle className="h-5 w-5 shrink-0 text-foreground/70" />
-                <span className="text-base font-medium">Пополнить баланс</span>
+                <span className="inline-flex items-center text-base font-medium leading-none">Пополнить баланс</span>
               </Link>
             </Button>
           </div>
@@ -595,10 +595,10 @@ export function ClientDashboardPage() {
               </p>
               <p className="text-[15px] text-muted-foreground mt-3">На счету для продления тарифов</p>
             </div>
-            <Button variant="default" size="lg" className="w-full gap-2 shadow-lg h-14 rounded-xl text-[16px] hover:scale-105 transition-transform" asChild>
-              <Link to="/cabinet/profile#topup">
-                <PlusCircle className="h-5 w-5" />
-                Пополнить баланс
+            <Button variant="default" size="lg" className="w-full gap-2 shadow-lg h-14 rounded-xl text-[16px] hover:scale-105 transition-transform [&_svg]:self-center [&_span]:leading-none" asChild>
+              <Link to="/cabinet/profile#topup" className="inline-flex items-center justify-center gap-2 leading-none">
+                <PlusCircle className="h-5 w-5 shrink-0" />
+                <span className="inline-flex items-center leading-none">Пополнить баланс</span>
               </Link>
             </Button>
           </CardContent>
@@ -632,8 +632,11 @@ export function ClientDashboardPage() {
                   </div>
                 )}
                 <div className="pt-3">
-                  <Button variant="outline" className="w-full rounded-xl h-12 text-[15px] bg-background/30 hover:bg-background/60 transition-colors border-border/50" asChild>
-                     <Link to="/cabinet/referral">Подробная статистика <ArrowRight className="h-4 w-4 ml-2"/></Link>
+                  <Button variant="outline" className="w-full rounded-xl h-12 text-[15px] bg-background/30 hover:bg-background/60 transition-colors border-border/50 [&_svg]:self-center [&_span]:leading-none" asChild>
+                     <Link to="/cabinet/referral" className="inline-flex items-center justify-center gap-2 leading-none">
+                       <span className="inline-flex items-center leading-none">Подробная статистика</span>
+                       <ArrowRight className="h-4 w-4 shrink-0" />
+                     </Link>
                   </Button>
                 </div>
               </>
@@ -644,10 +647,10 @@ export function ClientDashboardPage() {
                    <Wifi className="h-12 w-12 text-primary mx-auto mb-3 opacity-80" />
                    <p className="text-[15px] text-foreground font-medium">Всё готово к работе</p>
                 </div>
-                <Button variant="default" size="lg" className="w-full gap-2 rounded-xl shadow-lg h-14 text-[16px] hover:scale-105 transition-transform" asChild>
-                  <Link to="/cabinet/subscribe">
-                    <Wifi className="h-5 w-5" />
-                    Настроить VPN
+                <Button variant="default" size="lg" className="w-full gap-2 rounded-xl shadow-lg h-14 text-[16px] hover:scale-105 transition-transform [&_svg]:self-center [&_span]:leading-none" asChild>
+                  <Link to="/cabinet/subscribe" className="inline-flex items-center justify-center gap-2 leading-none">
+                    <Wifi className="h-5 w-5 shrink-0" />
+                    <span className="inline-flex items-center leading-none">Настроить VPN</span>
                   </Link>
                 </Button>
               </div>
@@ -657,8 +660,10 @@ export function ClientDashboardPage() {
                    <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
                    <p className="text-[15px] text-muted-foreground">Оплатите тариф, чтобы получить ссылку</p>
                 </div>
-                <Button variant="outline" size="lg" className="w-full rounded-xl h-14 text-[16px] bg-background/30 hover:bg-background/60 border-border/50 transition-colors" asChild>
-                  <Link to="/cabinet/tariffs">Выбрать тариф</Link>
+                <Button variant="outline" size="lg" className="w-full rounded-xl h-14 text-[16px] bg-background/30 hover:bg-background/60 border-border/50 transition-colors [&_span]:leading-none" asChild>
+                  <Link to="/cabinet/tariffs" className="inline-flex items-center justify-center leading-none">
+                    <span className="inline-flex items-center leading-none">Выбрать тариф</span>
+                  </Link>
                 </Button>
               </div>
             )}

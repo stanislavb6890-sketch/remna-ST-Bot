@@ -270,7 +270,8 @@ plategaWebhooksRouter.post("/platega", async (req, res) => {
       return res.status(200).json({ received: true });
     }
 
-    const isTopUp = !payment.tariffId && !payment.proxyTariffId;
+    const isExtraOption = hasExtraOptionInMetadata(payment.metadata);
+    const isTopUp = !payment.tariffId && !payment.proxyTariffId && !payment.singboxTariffId && !isExtraOption;
     if (isTopUp) {
       const changed = await prisma.$transaction(async (tx) => {
         const upd = await tx.payment.updateMany({

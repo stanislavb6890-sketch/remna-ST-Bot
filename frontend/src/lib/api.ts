@@ -536,6 +536,11 @@ export const api = {
     return request("/admin/settings", { method: "PATCH", body: JSON.stringify(data), token });
   },
 
+  /** Админ: сброс текстов лендинга на исходные (из кода). Возвращает обновлённые настройки. */
+  async resetLandingText(token: string): Promise<AdminSettings> {
+    return request("/admin/settings/reset-landing-text", { method: "POST", token });
+  },
+
   /** Админ: список тикетов (опционально ?status=open|closed) */
   async getAdminTickets(token: string, status?: "open" | "closed"): Promise<{
     items: { id: string; subject: string; status: string; createdAt: string; updatedAt: string; client: { id: string; email: string | null; telegramUsername: string | null } }[];
@@ -1441,6 +1446,9 @@ export type UpdateSettingsPayload = {
   landingStatsTariffsLabel?: string | null;
   landingStatsAccessLabel?: string | null;
   landingStatsPaymentMethods?: string | null;
+  landingReadyToConnectEyebrow?: string | null;
+  landingReadyToConnectTitle?: string | null;
+  landingReadyToConnectDesc?: string | null;
 };
 
 export interface ClientRecord {
@@ -1702,6 +1710,9 @@ export interface AdminSettings {
   landingStatsTariffsLabel?: string | null;
   landingStatsAccessLabel?: string | null;
   landingStatsPaymentMethods?: string | null;
+  landingReadyToConnectEyebrow?: string | null;
+  landingReadyToConnectTitle?: string | null;
+  landingReadyToConnectDesc?: string | null;
 }
 
 /** Конфиг страницы подписки (формат как sub.stealthnet.app) */
@@ -2240,5 +2251,8 @@ export interface PublicConfig {
     devicesSubtitle: string | null;
     faqTitle: string | null;
     faq: { q: string; a: string }[] | null;
+    readyToConnectEyebrow?: string | null;
+    readyToConnectTitle?: string | null;
+    readyToConnectDesc?: string | null;
   } | null;
 }

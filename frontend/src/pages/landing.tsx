@@ -23,14 +23,53 @@ import {
   Star,
   Terminal,
   Zap,
+  type LucideIcon,
 } from "lucide-react";
 
-const FEATURES_STRIP = [
-  { icon: Shield, label: "Защита", sub: "AES-256 шифрование" },
-  { icon: Lock, label: "Zero-Log", sub: "История не сохраняется" },
-  { icon: Star, label: "Оплата", sub: "Анонимно и безопасно" },
-  { icon: Zap, label: "Серверы", sub: "Собственная инфраструктура" },
-  { icon: Smartphone, label: "Установка", sub: "За 30 секунд" },
+type LandingFeatureItem = {
+  icon: LucideIcon;
+  label: string;
+  sub: string;
+  desc: string;
+  chips: string[];
+};
+
+const FEATURES_STRIP: LandingFeatureItem[] = [
+  {
+    icon: Shield,
+    label: "Защита",
+    sub: "AES-256 шифрование",
+    desc: "Современные протоколы и аккуратная защита трафика без ощущения технарского конструктора.",
+    chips: ["Шифрование", "Стабильность"],
+  },
+  {
+    icon: Lock,
+    label: "Zero-Log",
+    sub: "История не сохраняется",
+    desc: "Доступ строится вокруг приватности: без лишних следов, без визуального мусора и без тревоги за данные.",
+    chips: ["Zero-Log", "Приватность"],
+  },
+  {
+    icon: Star,
+    label: "Оплата",
+    sub: "Анонимно и безопасно",
+    desc: "Карта, СБП, кошелёк и крипта собираются в один понятный сценарий оплаты без сюрпризов.",
+    chips: ["Карта / СБП", "Крипта"],
+  },
+  {
+    icon: Zap,
+    label: "Серверы",
+    sub: "Собственная инфраструктура",
+    desc: "Свои мощности и продуманная маршрутизация дают нормальную скорость и предсказуемую работу сервиса.",
+    chips: ["Скорость", "Своя сеть"],
+  },
+  {
+    icon: Smartphone,
+    label: "Установка",
+    sub: "За 30 секунд",
+    desc: "Минимум кликов до подключения: зарегистрировался, оплатил и сразу получил инструкции внутри кабинета.",
+    chips: ["Быстрый старт", "Все устройства"],
+  },
 ];
 
 const BENEFITS = [
@@ -111,26 +150,6 @@ const JOURNEY_STEPS = [
   },
 ];
 
-const SIGNAL_CARDS = [
-  {
-    icon: Shield,
-    eyebrow: "privacy core",
-    title: "Zero-log и аккуратная защита",
-    desc: "Не ощущается как странный хак: нормальный продуктовый слой, чистый доступ и понятный контроль.",
-  },
-  {
-    icon: Globe,
-    eyebrow: "global access",
-    title: "Нужные сервисы открываются без драмы",
-    desc: "Маршруты и сценарии уже собраны под реальные поездки, работу и привычные повседневные задачи.",
-  },
-  {
-    icon: CreditCard,
-    eyebrow: "payments sync",
-    title: "Оплата встроена в общий сценарий",
-    desc: "Не отдельная форма из девяностых, а часть единого опыта: выбрал, оплатил, сразу подключился.",
-  },
-];
 
 const EXPERIENCE_PANELS = [
   {
@@ -155,6 +174,8 @@ const TRUST_POINTS = [
   "Строгая политика Zero-Log: мы не храним данные",
   "Высокая пропускная способность без ограничений",
 ];
+
+const SECTION_SCROLL_OFFSET = "scroll-mt-24 md:scroll-mt-28";
 
 const fadeUp = {
   initial: { opacity: 0, y: 22 },
@@ -277,11 +298,17 @@ export function LandingPage({ config }: { config: PublicConfig }) {
   const heroBadge = lc?.heroBadge ?? "Приватность, скорость и доступ";
   const heroHint = lc?.heroHint ?? "Регистрация за минуту · Оплата картой, СБП, кошельком и криптой";
   const featuresList = lc?.features?.length
-    ? lc.features.map((feature: any, index: number) => ({
-      icon: FEATURES_STRIP[index]?.icon ?? Shield,
-      label: feature.label,
-      sub: feature.sub,
-    }))
+    ? lc.features.map((feature: { label?: string | null; sub?: string | null }, index: number) => {
+      const fallback = FEATURES_STRIP[index] ?? FEATURES_STRIP[0];
+
+      return {
+        icon: fallback.icon,
+        label: feature.label?.trim() || fallback.label,
+        sub: feature.sub?.trim() || fallback.sub,
+        desc: fallback.desc,
+        chips: fallback.chips,
+      };
+    })
     : FEATURES_STRIP;
   const benefitsTitle = lc?.benefitsTitle ?? "Почему STEALTHNET ощущается как продукт, а не костыль";
   const benefitsSubtitle =
@@ -316,20 +343,16 @@ export function LandingPage({ config }: { config: PublicConfig }) {
     return allTariffs.reduce((min, current) => (current.tariff.price < min.tariff.price ? current : min));
   }, [tariffs]);
 
-  const statsPlatforms = lc?.statsPlatforms ?? "платформ";
-  const statsTariffsLabel = lc?.statsTariffsLabel ?? "тарифов онлайн";
-  const statsAccessLabel = lc?.statsAccessLabel ?? "доступ";
-  const statsPaymentMethods = lc?.statsPaymentMethods ?? "способа оплаты";
   const heroStats = [
-    { value: (lc?.devicesList?.length ?? DEVICES.length) + "+", label: statsPlatforms },
-    { value: lc?.showTariffs ? `${totalTariffs || "∞"}` : "24/7", label: lc?.showTariffs ? statsTariffsLabel : statsAccessLabel },
-    { value: paymentLabels.length ? `${paymentLabels.length}+` : "4", label: statsPaymentMethods },
+    { value: `${DEVICES.length}+`, label: "платформ" },
+    { value: lc?.showTariffs ? `${totalTariffs || "∞"}` : "24/7", label: lc?.showTariffs ? "тарифов онлайн" : "доступ" },
+    { value: paymentLabels.length ? `${paymentLabels.length}+` : "4", label: "способа оплаты" },
   ];
   const navItems = [
-    { label: lc?.navBenefits ?? "Преимущества", href: "#benefits" },
-    { label: lc?.navTariffs ?? "Тарифы", href: lc?.showTariffs ? "#tariffs" : "#devices" },
-    { label: lc?.navDevices ?? "Устройства", href: "#devices" },
-    { label: lc?.navFaq ?? "FAQ", href: "#faq" },
+    { label: "Преимущества", href: "#benefits" },
+    { label: "Тарифы", href: lc?.showTariffs ? "#tariffs" : "#devices" },
+    { label: "Устройства", href: "#devices" },
+    { label: "FAQ", href: "#faq" },
   ];
 
   const accentTheme = getLandingAccentTheme(config.themeAccent);
@@ -384,7 +407,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               </div>
             )}
             <div>
-              <p className="text-[11px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">{lc?.headerBadge ?? "premium access"}</p>
+              <p className="text-[11px] uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">premium access</p>
               <p className="text-lg font-black tracking-[0.14em] text-slate-950 dark:text-white">{config.serviceName || title}</p>
             </div>
           </Link>
@@ -403,7 +426,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
           <nav className="flex items-center gap-2 sm:gap-3">
             <Button variant="ghost" className="rounded-full px-4 text-slate-700 hover:bg-white/80 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10" asChild>
-              <Link to="/cabinet/login">{lc?.buttonLogin ?? "Вход"}</Link>
+              <Link to="/cabinet/login">Вход</Link>
             </Button>
             <Button
               className="rounded-full border px-5 text-white shadow-lg"
@@ -417,7 +440,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
       </header>
 
       <main className="relative z-10">
-        <section className="container mx-auto px-4 pb-10 pt-10 md:pb-16 md:pt-14 lg:pb-24 lg:pt-18">
+        <section id="home" className={`container mx-auto px-4 pb-10 pt-10 md:pb-16 md:pt-14 lg:pb-24 lg:pt-18 ${SECTION_SCROLL_OFFSET}`}>
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
             <motion.div {...fadeUp} className="max-w-3xl">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200/60 dark:border-white/10 bg-white/90 dark:bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.32em] text-slate-600 shadow-[0_12px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-white/12 dark:bg-white/8 dark:text-slate-300">
@@ -426,9 +449,9 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               </div>
 
               <h1 className="max-w-5xl text-5xl font-black leading-[0.9] tracking-[-0.06em] text-slate-950 md:text-6xl lg:text-[5.4rem] dark:text-white">
-                {lc?.heroHeadline1 ?? "Тихий доступ,"}
+                Тихий доступ,
                 <span className="block bg-clip-text text-transparent" style={accentTextStyle}>
-                  {lc?.heroHeadline2 ?? "который выглядит дорого."}
+                  который выглядит дорого.
                 </span>
               </h1>
 
@@ -445,9 +468,9 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   style={primaryButtonStyle}
                   asChild
                 >
-                  <Link to="/cabinet/register">
+                  <Link to="/cabinet/register" className="flex flex-row items-center justify-center gap-2">
                     {ctaText}
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
                 <Button
@@ -456,7 +479,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   className="h-14 rounded-full border-slate-200/80 dark:border-white/12 bg-white/70 px-7 text-base text-slate-900 shadow-[0_12px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl hover:bg-white dark:border-white/15 dark:bg-white/8 dark:text-white dark:hover:bg-white/12"
                   asChild
                 >
-                  <Link to="/cabinet/login">{lc?.buttonLoginCabinet ?? "Войти в кабинет"}</Link>
+                  <Link to="/cabinet/login">Войти в кабинет</Link>
                 </Button>
               </div>
 
@@ -474,13 +497,13 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   ))
                 ) : (
                   <div className="rounded-full border border-slate-200/60 dark:border-white/10 bg-white/90 dark:bg-white/5 px-4 py-2 text-sm text-slate-700 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/7 dark:text-slate-200">
-                    {lc?.defaultPaymentText ?? "Карта, СБП, крипта и быстрый старт"}
+                    Карта, СБП, крипта и быстрый старт
                   </div>
                 )}
               </div>
 
               <div className="mt-8 grid gap-3 md:max-w-2xl md:grid-cols-3">
-                {(lc?.journeySteps?.length ? lc.journeySteps.slice(0, 3).map((s: { title: string }, i: number) => ({ icon: (JOURNEY_STEPS[i] ?? JOURNEY_STEPS[0]).icon, title: s.title })) : JOURNEY_STEPS).map(({ icon: Icon, title: stepTitle }: { icon: typeof Sparkles; title: string }, index: number) => (
+                {JOURNEY_STEPS.map(({ icon: Icon, title: stepTitle }, index) => (
                   <motion.div
                     key={stepTitle}
                     initial={{ opacity: 0, y: 14 }}
@@ -520,114 +543,79 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
               {/* Floating badges removed */}
 
-              <div className="relative overflow-hidden rounded-[36px] border border-slate-200/60 dark:border-white/10 bg-white/85 dark:bg-white/5 p-6 shadow-[0_30px_100px_rgba(15,23,42,0.12)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/7 md:p-7">
+                            <div className="relative overflow-hidden rounded-[32px] border border-slate-200/60 dark:border-white/10 bg-white/85 dark:bg-white/5 p-6 shadow-[0_30px_100px_rgba(15,23,42,0.12)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/7 md:p-7">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent dark:via-emerald-300/70" />
 
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">инфраструктура</p>
-                    <h2 className="mt-3 text-2xl font-black tracking-[-0.04em] text-slate-950 dark:text-white md:text-3xl">
-                      {lc?.infraTitle ?? "Мощная сеть и стабильное подключение без сложных настроек"}
+                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">private network</p>
+                    <h2 className="mt-3 text-2xl font-black tracking-[-0.04em] text-slate-950 dark:text-white">
+                      Один доступ — все нужные сервисы под рукой
                     </h2>
                   </div>
-                  <motion.div
-                    className="rounded-2xl border p-3"
-                    style={{ borderColor: withAlpha(accentTheme.primary, 0.28), backgroundColor: withAlpha(accentTheme.primary, 0.12), color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}
-                    animate={{ y: [0, -6, 0], scale: [1, 1.03, 1] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  >
+                  <div className="rounded-2xl border p-3" style={{ borderColor: withAlpha(accentTheme.primary, 0.28), backgroundColor: withAlpha(accentTheme.primary, 0.12), color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}>
                     <Shield className="h-6 w-6" />
-                  </motion.div>
+                  </div>
                 </div>
 
-                <div className="mt-6 grid gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(280px,0.95fr)]">
-                  <div className="relative min-h-[360px] overflow-hidden rounded-[32px] border border-slate-200/80 dark:border-white/12 bg-slate-950 p-5 text-white shadow-xl shadow-slate-950/15 dark:bg-slate-900/90">
-                    <div className="absolute -left-16 top-8 h-36 w-36 rounded-full blur-3xl" style={{ backgroundColor: withAlpha(accentTheme.primary, 0.32) }} />
-                    <div className="absolute right-0 top-1/3 h-32 w-32 rounded-full blur-3xl" style={{ backgroundColor: withAlpha(accentTheme.secondary, 0.24) }} />
-                    <div className="relative flex items-center justify-between gap-3">
+                <div className="mt-6 grid gap-3">
+                  {featuresList.slice(0, 4).map(({ icon: Icon, label, sub }: any, index: number) => (
+                    <motion.div
+                      key={label}
+                      initial={{ opacity: 0, x: 18 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: 0.08 * index }}
+                      className="flex items-center gap-4 rounded-3xl border border-slate-200 dark:border-white/15 bg-white/85 dark:bg-white/5 p-4 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/35"
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ ...accentGlowStyle, color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}>
+                        <Icon className="h-5 w-5" />
+                      </div>
                       <div>
-                        <p className="text-xs uppercase tracking-[0.3em] text-slate-400">network cockpit</p>
-                        <p className="mt-2 text-lg font-semibold">{lc?.networkCockpitText ?? "Спокойный доступ без ощущения технарского конструктора"}</p>
+                        <p className="font-semibold text-slate-900 dark:text-white">{label}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">{sub}</p>
                       </div>
-                      <div className="rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs uppercase tracking-[0.24em] text-slate-200">
-                        live
-                      </div>
-                    </div>
+                    </motion.div>
+                  ))}
+                </div>
 
-                    <div className="relative mt-7 space-y-3">
-                      {(lc?.signalCards?.length ? lc.signalCards.map((s: { eyebrow?: string; title: string; desc: string }, i: number) => ({ icon: (SIGNAL_CARDS[i] ?? SIGNAL_CARDS[0]).icon, eyebrow: s.eyebrow ?? "", title: s.title, desc: s.desc })) : SIGNAL_CARDS).map(({ icon: Icon, eyebrow, title: cardTitle, desc }: { icon: typeof Shield; eyebrow: string; title: string; desc: string }, index: number) => (
-                        <motion.div
-                          key={cardTitle}
-                          initial={{ opacity: 0, x: 18 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.4, delay: 0.08 * index }}
-                          className="relative overflow-hidden rounded-[26px] border border-white/12 bg-white/8 p-4 backdrop-blur-xl"
-                        >
-                          <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-white/50 to-transparent" />
-                          <div className="flex items-start gap-4">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl" style={{ backgroundColor: withAlpha(accentTheme.primary, 0.16), color: accentTheme.tertiary }}>
-                              <Icon className="h-5 w-5" />
-                            </div>
-                            <div>
-                              <p className="text-[11px] uppercase tracking-[0.28em] text-slate-400">{eyebrow}</p>
-                              <p className="mt-2 font-semibold text-white">{cardTitle}</p>
-                              <p className="mt-2 text-sm leading-6 text-slate-300">{desc}</p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
+                <div className="mt-6 grid gap-4 md:grid-cols-2">
+                  <div className="rounded-[28px] border border-slate-200/80 dark:border-white/12 bg-slate-950 px-5 py-5 text-white shadow-xl shadow-slate-950/15 dark:border-white/12 dark:bg-slate-900/90">
+                    <p className="text-xs uppercase tracking-[0.28em]" style={{ color: withAlpha(accentTheme.tertiary, 0.8) }}>от</p>
+                    <div className="mt-2 flex items-baseline gap-2">
+                      <span className="text-4xl font-black tracking-[-0.05em]">
+                        {lowestTariff ? lowestTariff.tariff.price : "∞"}
+                      </span>
+                      <span className="text-sm text-slate-300">
+                        {lowestTariff ? lowestTariff.tariff.currency.toUpperCase() : "privacy"}
+                      </span>
                     </div>
-
-                    {/* Smart routing removed */}
+                    <p className="mt-2 text-sm text-slate-300/90">
+                      {lowestTariff
+                        ? `${lowestTariff.tariff.name} · ${lowestTariff.tariff.durationDays} дней доступа`
+                        : "Тарифы и условия подтягиваются из админки автоматически"}
+                    </p>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="rounded-[30px] border border-slate-200/80 dark:border-white/12 bg-white/95 dark:bg-white/5 p-5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/6">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">starting point</p>
-                          <div className="mt-3 flex items-baseline gap-2">
-                            <span className="text-4xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-                              {lowestTariff ? lowestTariff.tariff.price : "∞"}
-                            </span>
-                            <span className="pb-1 text-sm uppercase text-slate-500 dark:text-slate-400">
-                              {lowestTariff ? lowestTariff.tariff.currency.toUpperCase() : "privacy"}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="rounded-full border px-3 py-1 text-xs uppercase tracking-[0.24em]" style={{ borderColor: withAlpha(accentTheme.primary, 0.3), backgroundColor: withAlpha(accentTheme.primary, 0.12), color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}>
-                          {lowestTariff ? `${lowestTariff.tariff.durationDays} дн.` : "live"}
-                        </div>
-                      </div>
-                      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                        {lowestTariff
-                          ? `${lowestTariff.tariff.name} — ${lc?.lowestTariffDesc ?? "первый мягкий вход в сервис без неприятных сюрпризов."}`
-                          : (lc?.noTariffsMessage ?? "Тарифы и условия подтягиваются напрямую из админки, поэтому лендинг всегда показывает актуальную картину.")}
-                      </p>
-                    </div>
+                  <div className="rounded-[28px] border border-slate-200/80 dark:border-white/12 bg-white/95 dark:bg-white/5 p-5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/6">
+                    <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">быстрый старт</p>
+                    <ul className="mt-3 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                      <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4" style={{ color: accentTheme.primary }} />Регистрация и вход через кабинет без лишней бюрократии</li>
+                      <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4" style={{ color: accentTheme.primary }} />Моментальное получение тарифов, способов оплаты и инструкций</li>
+                      <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4" style={{ color: accentTheme.primary }} />Поддержка, оферта и контакты доступны прямо на лендинге</li>
+                    </ul>
+                  </div>
+                </div>
 
-                    <div className="rounded-[30px] border border-slate-200/80 dark:border-white/12 p-5 backdrop-blur-xl dark:border-white/10" style={accentGlowStyle}>
-                      <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">быстрый старт</p>
-                      <ul className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                        {(lc?.quickStartList?.length ? lc.quickStartList : ["Мгновенный доступ после оплаты", "Подробные инструкции и техподдержка", "Удобный личный кабинет в Telegram"]).slice(0, 3).map((text: string) => (
-                          <li key={text} className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4" style={{ color: accentTheme.primary }} />{text}</li>
-                        ))}
-                      </ul>
+                <div className="mt-4 rounded-[28px] border border-slate-200/80 dark:border-white/12 p-5 backdrop-blur-xl dark:border-white/10" style={accentGlowStyle}>
+                  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">ощущение продукта</p>
+                      <p className="mt-2 text-lg font-semibold text-slate-950 dark:text-white">Не просто VPN, а аккуратно собранный сервис с человеческим UX</p>
                     </div>
-
-                    <div className="rounded-[30px] border border-slate-200/80 dark:border-white/12 bg-white/90 dark:bg-white/5 p-5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/6">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">пульс продукта</p>
-                          <p className="mt-2 text-lg font-semibold text-slate-950 dark:text-white">{lc?.pulseTitle ?? "Не просто VPN, а аккуратно собранный сервис с человеческим UX"}</p>
-                        </div>
-                        <Rocket className="h-5 w-5 shrink-0" style={{ color: accentTheme.primary }} />
-                      </div>
-                      <Button className="mt-5 h-12 rounded-full px-5 text-white" style={primaryButtonStyle} asChild>
-                        <Link to={lc.showTariffs ? "#tariffs" : "/cabinet/register"}>{lc.showTariffs ? (lc?.buttonWatchTariffs ?? "Смотреть тарифы") : (lc?.buttonStart ?? "Начать")}</Link>
-                      </Button>
-                    </div>
+                    <Button className="h-12 rounded-full px-5 text-white" style={primaryButtonStyle} asChild>
+                      <Link to={lc.showTariffs ? "#tariffs" : "/cabinet/register"}>{lc.showTariffs ? "Смотреть тарифы" : "Начать"}</Link>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -642,11 +630,11 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 <div className="max-w-2xl">
                   <p className="text-xs uppercase tracking-[0.32em] text-slate-500 dark:text-slate-400">премиальный доступ</p>
                   <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-slate-950 md:text-4xl dark:text-white">
-                    {lc?.comfortTitle ?? "Всё для твоего комфорта и безопасности в сети"}
+                    Всё для твоего комфорта и безопасности в сети
                   </h2>
                 </div>
                 <div className="rounded-full border border-slate-200/70 dark:border-white/10 bg-white/85 dark:bg-white/8 px-4 py-2 text-sm text-slate-600 backdrop-blur-xl dark:text-slate-300">
-                  {lc?.comfortBadge ?? "стабильность · скорость · безопасность"}
+                  стабильность · скорость · безопасность
                 </div>
               </div>
 
@@ -654,10 +642,10 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 <div className="rounded-[30px] border border-slate-200/80 dark:border-white/12 bg-slate-950 p-5 text-white shadow-xl shadow-slate-950/15 dark:border-white/12 dark:bg-slate-900/90">
                   <p className="text-xs uppercase tracking-[0.28em]" style={{ color: withAlpha(accentTheme.tertiary, 0.78) }}>главные принципы</p>
                   <p className="mt-4 text-2xl font-black leading-tight tracking-[-0.04em]">
-                    {lc?.principlesTitle ?? "Мы строим сервис, которому доверяют. Без компромиссов в скорости."}
+                    Мы строим сервис, которому доверяют. Без компромиссов в скорости.
                   </p>
                   <div className="mt-6 space-y-4">
-                    {(lc?.trustPoints?.length ? lc.trustPoints : TRUST_POINTS).map((point: string) => (
+                    {TRUST_POINTS.map((point) => (
                       <div key={point} className="flex items-start gap-3 rounded-[22px] border border-white/10 bg-white/7 px-4 py-3">
                         <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: accentTheme.tertiary }} />
                         <span className="text-sm leading-6 text-slate-200">{point}</span>
@@ -667,7 +655,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {(lc?.experiencePanels?.length ? lc.experiencePanels.map((p: { title: string; desc: string }, i: number) => ({ icon: (EXPERIENCE_PANELS[i] ?? EXPERIENCE_PANELS[0]).icon, title: p.title, desc: p.desc })) : EXPERIENCE_PANELS).map(({ icon: Icon, title: itemTitle, desc }: { icon: typeof Sparkles; title: string; desc: string }, index: number) => (
+                  {EXPERIENCE_PANELS.map(({ icon: Icon, title: itemTitle, desc }, index) => (
                     <motion.div
                       key={itemTitle}
                       initial={{ opacity: 0, y: 18 }}
@@ -687,8 +675,8 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-              {featuresList.slice(0, 4).map(({ icon: Icon, label, sub }: any, index: number) => (
+            <div className="grid content-start gap-4 self-start sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              {featuresList.slice(0, 4).map(({ icon: Icon, label, sub, desc, chips }: LandingFeatureItem, index: number) => (
                 <motion.div
                   key={label}
                   initial={{ opacity: 0, y: 16 }}
@@ -698,13 +686,40 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   whileHover={{ y: -6, scale: 1.01 }}
                   className="group rounded-[30px] border border-slate-200/60 dark:border-white/10 bg-white/80 dark:bg-white/5 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.07)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/6"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ ...accentGlowStyle, color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}>
-                      <Icon className="h-5 w-5" />
-                    </div>
+                  <div className="flex min-h-[220px] flex-col justify-between">
                     <div>
-                      <p className="font-semibold text-slate-900 dark:text-white">{label}</p>
-                      <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{sub}</p>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ ...accentGlowStyle, color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}>
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div
+                          className="rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.24em]"
+                          style={{
+                            borderColor: withAlpha(accentTheme.primary, 0.22),
+                            backgroundColor: withAlpha(accentTheme.primary, 0.08),
+                            color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary,
+                          }}
+                        >
+                          0{index + 1}
+                        </div>
+                      </div>
+
+                      <div className="mt-5">
+                        <p className="font-semibold text-slate-900 dark:text-white">{label}</p>
+                        <p className="mt-1 text-sm font-medium leading-6 text-slate-600 dark:text-slate-300">{sub}</p>
+                        <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{desc}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {chips.map((chip: string) => (
+                        <span
+                          key={`${label}-${chip}`}
+                          className="rounded-full border border-slate-200/70 dark:border-white/10 bg-white/85 dark:bg-white/8 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-600 backdrop-blur-xl dark:text-slate-300"
+                        >
+                          {chip}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
@@ -713,11 +728,11 @@ export function LandingPage({ config }: { config: PublicConfig }) {
           </motion.div>
         </section>
 
-        <section id="benefits" className="container mx-auto px-4 py-14 md:py-20">
+        <section id="benefits" className={`container mx-auto px-4 py-14 md:py-20 ${SECTION_SCROLL_OFFSET}`}>
           <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/60 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600 backdrop-blur-xl dark:border-white/10 dark:bg-white/7 dark:text-slate-300">
               <Sparkles className="h-4 w-4" style={{ color: accentTheme.primary }} />
-              {lc?.benefitsBadge ?? "Почему мы"}
+              Почему мы
             </div>
             <h2 className="mt-5 text-3xl font-black tracking-[-0.04em] text-slate-950 md:text-5xl dark:text-white">
               {benefitsTitle}
@@ -735,10 +750,10 @@ export function LandingPage({ config }: { config: PublicConfig }) {
             >
               <p className="text-xs uppercase tracking-[0.32em] text-slate-500 dark:text-slate-300">технологии</p>
               <h3 className="mt-4 max-w-md text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white md:text-4xl">
-                {lc?.techTitle ?? "Продуманная инфраструктура для твоей свободы."}
+                Продуманная инфраструктура для твоей свободы.
               </h3>
               <p className="mt-5 max-w-lg text-sm leading-7 text-slate-600 dark:text-slate-300 md:text-base">
-                {lc?.techDesc ?? "Мы используем только современные протоколы и мощные серверы, чтобы обеспечить максимальную скорость и стабильность соединения в любых условиях."}
+                Мы используем только современные протоколы и мощные серверы, чтобы обеспечить максимальную скорость и стабильность соединения в любых условиях.
               </p>
 
               <div className="mt-8 space-y-4">
@@ -798,7 +813,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
         </section>
 
         {lc.showTariffs && (
-          <section id="tariffs" className="container mx-auto px-4 py-14 md:py-20">
+          <section id="tariffs" className={`container mx-auto px-4 py-14 md:py-20 ${SECTION_SCROLL_OFFSET}`}>
             <motion.div
               {...fadeUp}
               className="overflow-hidden rounded-[36px] border border-slate-200/60 dark:border-white/10 px-6 py-8 text-white shadow-[0_30px_120px_rgba(15,23,42,0.22)] md:px-8 md:py-10"
@@ -839,7 +854,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                           </div>
                           <div>
                             <h3 className="text-xl font-bold text-white">{category.name}</h3>
-                            <p className="text-sm text-slate-300">{lc?.categorySubtitle ?? "Подбирай вариант под свой сценарий — от базового доступа до долгого спокойного использования."}</p>
+                            <p className="text-sm text-slate-300">Подбирай вариант под свой сценарий — от базового доступа до долгого спокойного использования.</p>
                           </div>
                         </div>
                         <div className="text-sm text-slate-300">{category.tariffs.length} тарифов в категории</div>
@@ -859,7 +874,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                                   {tariff.description ? (
                                     <p className="mt-2 text-sm leading-6 text-slate-300">{tariff.description}</p>
                                   ) : (
-                                    <p className="mt-2 text-sm leading-6 text-slate-400">{lc?.tariffDefaultDesc ?? "Чистый доступ без лишних ограничений и путаницы."}</p>
+                                    <p className="mt-2 text-sm leading-6 text-slate-400">Чистый доступ без лишних ограничений и путаницы.</p>
                                   )}
                                 </div>
                                 <div className="rounded-full border px-3 py-1 text-xs uppercase tracking-[0.24em]" style={{ borderColor: withAlpha(accentTheme.primary, 0.3), backgroundColor: withAlpha(accentTheme.primary, 0.12), color: withAlpha(accentTheme.tertiary, 0.95) }}>
@@ -878,13 +893,13 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                               </div>
 
                               <div className="mt-6 space-y-3 text-sm text-slate-300">
-                                <div className="flex items-center gap-3"><Check className="h-4 w-4" style={{ color: accentTheme.tertiary }} />{lc?.tariffBullet1 ?? "Подключение через личный кабинет"}</div>
-                                <div className="flex items-center gap-3"><Check className="h-4 w-4" style={{ color: accentTheme.tertiary }} />{lc?.tariffBullet2 ?? "Поддержка и инструкции внутри сервиса"}</div>
-                                <div className="flex items-center gap-3"><Check className="h-4 w-4" style={{ color: accentTheme.tertiary }} />{lc?.tariffBullet3 ?? "Автоматическая активация после оплаты"}</div>
+                                <div className="flex items-center gap-3"><Check className="h-4 w-4" style={{ color: accentTheme.tertiary }} />Подключение через личный кабинет</div>
+                                <div className="flex items-center gap-3"><Check className="h-4 w-4" style={{ color: accentTheme.tertiary }} />Поддержка и инструкции внутри сервиса</div>
+                                <div className="flex items-center gap-3"><Check className="h-4 w-4" style={{ color: accentTheme.tertiary }} />Автоматическая активация после оплаты</div>
                               </div>
 
                               <Button className="mt-6 h-12 rounded-full text-white" style={primaryButtonStyle} asChild>
-                                <Link to="/cabinet/register">{lc?.buttonChooseTariff ?? "Выбрать тариф"}</Link>
+                                <Link to="/cabinet/register">Выбрать тариф</Link>
                               </Button>
                             </div>
                           );
@@ -895,14 +910,14 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 </div>
               ) : (
                 <div className="mt-8 rounded-[30px] border border-white/12 bg-white/7 p-8 text-center text-slate-300 backdrop-blur-xl">
-                  {lc?.noTariffsMessage ?? "Тарифы пока не опубликованы, но лендинг уже готов — контент подтянется автоматически из админки."}
+                  Тарифы пока не опубликованы, но лендинг уже готов — контент подтянется автоматически из админки.
                 </div>
               )}
             </motion.div>
           </section>
         )}
 
-        <section id="devices" className="container mx-auto px-4 py-14 md:py-20">
+        <section id="devices" className={`container mx-auto px-4 py-14 md:py-20 ${SECTION_SCROLL_OFFSET}`}>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
             <motion.div {...fadeUp} className="rounded-[32px] border border-slate-200/60 dark:border-white/10 bg-white/80 dark:bg-white/5 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl md:p-8 dark:border-white/10 dark:bg-white/6">
               <p className="text-xs uppercase tracking-[0.32em] text-slate-500 dark:text-slate-400">devices</p>
@@ -915,7 +930,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   <div className="relative flex items-center justify-between gap-3">
                     <div>
                       <p className="text-xs uppercase tracking-[0.28em] text-slate-400">device cockpit</p>
-                      <p className="mt-2 text-lg font-semibold">{lc?.devicesCockpitText ?? "Один аккаунт, много устройств, ноль ощущения хаоса"}</p>
+                      <p className="mt-2 text-lg font-semibold">Один аккаунт, много устройств, ноль ощущения хаоса</p>
                     </div>
                     <div className="rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs uppercase tracking-[0.24em] text-slate-200">
                       synced
@@ -923,7 +938,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   </div>
 
                   <div className="relative mt-6 grid gap-3 sm:grid-cols-2">
-                    {(lc?.devicesList?.length ? lc.devicesList.map((name: string, i: number) => ({ name, icon: (DEVICES[i] ?? DEVICES[0]).icon })) : DEVICES).map(({ name, icon: Icon }: { name: string; icon: typeof Monitor }, index: number) => (
+                    {DEVICES.map(({ name, icon: Icon }, index) => (
                       <motion.div
                         key={name}
                         initial={{ opacity: 0, scale: 0.96 }}
@@ -948,24 +963,24 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
                 <div className="rounded-[28px] border border-slate-200/80 dark:border-white/12 bg-white/95 dark:bg-white/5 p-5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/6">
                   <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">универсальность</p>
-                  <p className="mt-3 text-lg font-semibold text-slate-950 dark:text-white">{lc?.universalityTitle ?? "Одинаково приятный опыт на десктопе, телефоне и планшете"}</p>
-                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">{lc?.universalityDesc ?? "Один аккаунт для всех твоих устройств. Подключай что угодно и когда угодно."}</p>
+                  <p className="mt-3 text-lg font-semibold text-slate-950 dark:text-white">Одинаково приятный опыт на десктопе, телефоне и планшете</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">Один аккаунт для всех твоих устройств. Подключай что угодно и когда угодно.</p>
                 </div>
 
                 <div className="rounded-[28px] border border-slate-200/80 dark:border-white/12 p-5 backdrop-blur-xl dark:border-white/10" style={accentGlowStyle}>
                   <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">быстрая настройка</p>
-                  <p className="mt-3 text-lg font-semibold text-slate-950 dark:text-white">{lc?.quickSetupTitle ?? "Установка займет меньше минуты"}</p>
-                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">{lc?.quickSetupDesc ?? "Нажал, оплатил, получил доступ. Подробные инструкции помогут сделать всё быстро."}</p>
+                  <p className="mt-3 text-lg font-semibold text-slate-950 dark:text-white">Установка займет меньше минуты</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">Нажал, оплатил, получил доступ. Подробные инструкции помогут сделать всё быстро.</p>
                 </div>
               </div>
             </motion.div>
 
             <motion.div {...fadeUp} transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }} className="rounded-[32px] border border-slate-200/60 dark:border-white/10 p-6 text-white shadow-[0_24px_70px_rgba(15,23,42,0.18)] md:p-8 dark:border-white/10" style={darkPanelStyle}>
               <p className="text-xs uppercase tracking-[0.32em]" style={{ color: withAlpha(accentTheme.tertiary, 0.8) }}>быстрый старт</p>
-              <h3 className="mt-4 text-3xl font-black tracking-[-0.04em] md:text-4xl">{lc?.premiumServiceTitle ?? "Премиальный сервис без технической боли"}</h3>
+              <h3 className="mt-4 text-3xl font-black tracking-[-0.04em] md:text-4xl">Премиальный сервис без технической боли</h3>
               <div className="mt-6 space-y-4 text-sm leading-7 text-slate-300 md:text-base">
-                <p>{lc?.premiumServicePara1 ?? "Один вход, одна подписка и понятные шаги: зарегистрировался, оплатил, подключил нужное устройство и забыл про блокировки."}</p>
-                <p>{lc?.premiumServicePara2 ?? "Наша цель — предоставить инструмент, который просто работает. Всегда, везде и на любом устройстве."}</p>
+                <p>Один вход, одна подписка и понятные шаги: зарегистрировался, оплатил, подключил нужное устройство и забыл про блокировки.</p>
+                <p>Наша цель — предоставить инструмент, который просто работает. Всегда, везде и на любом устройстве.</p>
               </div>
 
               <div className="mt-8 space-y-4">
@@ -993,7 +1008,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               </div>
 
               <Button className="mt-8 h-13 rounded-full px-6 text-white" style={primaryButtonStyle} asChild>
-                <Link to="/cabinet/register">{lc?.buttonOpenCabinet ?? "Открыть кабинет и подключиться"}</Link>
+                <Link to="/cabinet/register">Открыть кабинет и подключиться</Link>
               </Button>
             </motion.div>
           </div>
@@ -1009,10 +1024,10 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               <div>
                 <p className="text-xs uppercase tracking-[0.32em] text-slate-500" style={resolvedMode === "dark" ? { color: withAlpha(accentTheme.tertiary, 0.75) } : undefined}>как это работает</p>
                 <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-slate-950 md:text-4xl dark:text-white">
-                  {lc?.howItWorksTitle ?? "От первого визита до безопасного интернета — всего пара шагов"}
+                  От первого визита до безопасного интернета — всего пара шагов
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300 md:text-base">
-                  {lc?.howItWorksDesc ?? "Мы сделали всё, чтобы процесс подключения был максимально простым и понятным. Никаких сложных инструкций и лишних действий."}
+                  Мы сделали всё, чтобы процесс подключения был максимально простым и понятным. Никаких сложных инструкций и лишних действий.
                 </p>
               </div>
 
@@ -1037,8 +1052,8 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {featuresList.slice(0, 2).map(({ icon: Icon, label, sub }: any) => (
+                <div className="grid content-start gap-4 sm:grid-cols-2">
+                  {featuresList.slice(0, 2).map(({ icon: Icon, label, sub, desc }: LandingFeatureItem) => (
                     <div
                       key={label}
                       className="rounded-[28px] border border-slate-200/80 dark:border-white/12 bg-white/85 dark:bg-white/5 p-5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/6"
@@ -1047,7 +1062,8 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                         <Icon className="h-5 w-5" />
                       </div>
                       <h3 className="mt-4 text-lg font-semibold text-slate-950 dark:text-white">{label}</h3>
-                      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">{sub}</p>
+                      <p className="mt-3 text-sm font-medium leading-6 text-slate-600 dark:text-slate-300">{sub}</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{desc}</p>
                     </div>
                   ))}
 
@@ -1068,7 +1084,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
           </motion.div>
         </section>
 
-        <section id="faq" className="container mx-auto grid gap-8 px-4 py-14 md:py-20 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <section id="faq" className={`container mx-auto grid gap-8 px-4 py-14 md:py-20 lg:grid-cols-[minmax(0,1fr)_360px] ${SECTION_SCROLL_OFFSET}`}>
           <motion.div {...fadeUp} className="rounded-[32px] border border-slate-200/60 dark:border-white/10 bg-white/80 dark:bg-white/5 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-2xl md:p-8 dark:border-white/10 dark:bg-white/6">
             <p className="text-xs uppercase tracking-[0.32em] text-slate-500 dark:text-slate-400">faq</p>
             <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-slate-950 md:text-4xl dark:text-white">{faqTitle}</h2>
@@ -1160,12 +1176,12 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-3xl">
-                <p className="text-xs uppercase tracking-[0.34em]" style={{ color: withAlpha(accentTheme.tertiary, 0.75) }}>ready to connect</p>
+                <p className="text-xs uppercase tracking-[0.34em]" style={{ color: withAlpha(accentTheme.tertiary, 0.75) }}>{lc?.readyToConnectEyebrow ?? "ready to connect"}</p>
                 <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] md:text-5xl">
-                  Если честно — теперь это уже не “лендинг”, а витрина продукта.
+                  {lc?.readyToConnectTitle ?? "Если честно — теперь это уже не \"лендинг\", а витрина продукта."}
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-200 md:text-base">
-                  Весь контент продолжает жить в админке, а визуально страница наконец ощущается как сервис, за который не стыдно брать деньги.
+                  {lc?.readyToConnectDesc ?? "Весь контент продолжает жить в админке, а визуально страница наконец ощущается как сервис, за который не стыдно брать деньги."}
                 </p>
               </div>
 

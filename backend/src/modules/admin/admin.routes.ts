@@ -1088,6 +1088,9 @@ const updateSettingsSchema = z.object({
   landingStatsTariffsLabel: z.string().max(50).nullable().optional(),
   landingStatsAccessLabel: z.string().max(50).nullable().optional(),
   landingStatsPaymentMethods: z.string().max(50).nullable().optional(),
+  landingReadyToConnectEyebrow: z.string().max(200).nullable().optional(),
+  landingReadyToConnectTitle: z.string().max(500).nullable().optional(),
+  landingReadyToConnectDesc: z.string().max(2000).nullable().optional(),
 });
 
 adminRouter.patch("/settings", async (req, res) => {
@@ -1700,6 +1703,9 @@ adminRouter.patch("/settings", async (req, res) => {
     ["landingStatsTariffsLabel", "landing_stats_tariffs_label"],
     ["landingStatsAccessLabel", "landing_stats_access_label"],
     ["landingStatsPaymentMethods", "landing_stats_payment_methods"],
+    ["landingReadyToConnectEyebrow", "landing_ready_to_connect_eyebrow"],
+    ["landingReadyToConnectTitle", "landing_ready_to_connect_title"],
+    ["landingReadyToConnectDesc", "landing_ready_to_connect_desc"],
   ];
   for (const [key, dbKey] of landingKeys) {
     const v = updates[key];
@@ -1714,6 +1720,46 @@ adminRouter.patch("/settings", async (req, res) => {
   const config = await getSystemConfig();
   return res.json(config);
 });
+
+/** Сброс всех текстов лендинга на исходные (из кода). Очищает значения в БД — фронт подставит дефолты. */
+const LANDING_TEXT_DB_KEYS = [
+  "landing_hero_title", "landing_hero_subtitle", "landing_hero_cta_text", "landing_contacts", "landing_offer_link",
+  "landing_privacy_link", "landing_footer_text", "landing_hero_badge", "landing_hero_hint",
+  "landing_feature_1_label", "landing_feature_1_sub", "landing_feature_2_label", "landing_feature_2_sub",
+  "landing_feature_3_label", "landing_feature_3_sub", "landing_feature_4_label", "landing_feature_4_sub",
+  "landing_feature_5_label", "landing_feature_5_sub", "landing_benefits_title", "landing_benefits_subtitle",
+  "landing_benefit_1_title", "landing_benefit_1_desc", "landing_benefit_2_title", "landing_benefit_2_desc",
+  "landing_benefit_3_title", "landing_benefit_3_desc", "landing_benefit_4_title", "landing_benefit_4_desc",
+  "landing_benefit_5_title", "landing_benefit_5_desc", "landing_benefit_6_title", "landing_benefit_6_desc",
+  "landing_tariffs_title", "landing_tariffs_subtitle", "landing_devices_title", "landing_devices_subtitle",
+  "landing_faq_title", "landing_faq_json", "landing_hero_headline_1", "landing_hero_headline_2",
+  "landing_header_badge", "landing_button_login", "landing_button_login_cabinet", "landing_nav_benefits",
+  "landing_nav_tariffs", "landing_nav_devices", "landing_nav_faq", "landing_benefits_badge",
+  "landing_default_payment_text", "landing_button_choose_tariff", "landing_no_tariffs_message",
+  "landing_button_watch_tariffs", "landing_button_start", "landing_button_open_cabinet",
+  "landing_journey_steps_json", "landing_signal_cards_json", "landing_trust_points_json",
+  "landing_experience_panels_json", "landing_devices_list_json", "landing_quick_start_json",
+  "landing_infra_title", "landing_network_cockpit_text", "landing_pulse_title", "landing_comfort_title",
+  "landing_comfort_badge", "landing_principles_title", "landing_tech_title", "landing_tech_desc",
+  "landing_category_subtitle", "landing_tariff_default_desc", "landing_tariff_bullet_1", "landing_tariff_bullet_2",
+  "landing_tariff_bullet_3", "landing_lowest_tariff_desc", "landing_devices_cockpit_text",
+  "landing_universality_title", "landing_universality_desc", "landing_quick_setup_title", "landing_quick_setup_desc",
+  "landing_premium_service_title", "landing_premium_service_para1", "landing_premium_service_para2",
+  "landing_how_it_works_title", "landing_how_it_works_desc",   "landing_stats_platforms",
+  "landing_stats_tariffs_label", "landing_stats_access_label", "landing_stats_payment_methods",
+  "landing_ready_to_connect_eyebrow", "landing_ready_to_connect_title", "landing_ready_to_connect_desc",
+];
+adminRouter.post("/settings/reset-landing-text", asyncRoute(async (req, res) => {
+  for (const dbKey of LANDING_TEXT_DB_KEYS) {
+    await prisma.systemSetting.upsert({
+      where: { key: dbKey },
+      create: { key: dbKey, value: "" },
+      update: { value: "" },
+    });
+  }
+  const config = await getSystemConfig();
+  return res.json(config);
+}));
 
 // ——— Тикеты (админ: список, просмотр, закрытие, ответ)
 adminRouter.get("/tickets", asyncRoute(async (req, res) => {

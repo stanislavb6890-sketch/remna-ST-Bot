@@ -7,11 +7,20 @@ import { useIsMiniapp } from "@/hooks/use-is-miniapp";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { GlassSelect } from "@/components/ui/glass-select";
-import { LayoutDashboard, Package, User, LogOut, Shield, Users, Sun, Moon, PlusCircle, Globe, KeyRound, MessageSquare, Palette, Monitor, Check, Loader2, Settings, Layers, MoreHorizontal, ChevronDown } from "lucide-react";
+import { LayoutDashboard, Package, User, LogOut, Shield, Users, Sun, Moon, PlusCircle, Globe, KeyRound, MessageSquare, Palette, Monitor, Check, Loader2, Settings, Layers, MoreHorizontal, ChevronDown, Wallet } from "lucide-react";
 import { useTheme, ACCENT_PALETTES, type ThemeMode, type ThemeAccent } from "@/contexts/theme";
 import { cn } from "@/lib/utils";
 import { FloatingChat } from "@/components/floating-chat";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+function formatMoney(amount: number, currency: string) {
+  return new Intl.NumberFormat("ru-RU", {
+    style: "currency",
+    currency: currency.toUpperCase() === "USD" ? "USD" : currency.toUpperCase() === "RUB" ? "RUB" : "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
 
 function AnalyticsScripts() {
   useEffect(() => {
@@ -534,6 +543,7 @@ function CabinetShell() {
   }, [state.token, refreshProfile]);
   const serviceName = config?.serviceName ?? "";
   const logo = config?.logo && !logoError ? config.logo : null;
+  const headerBalance = state.client ? formatMoney(state.client.balance, state.client.preferredCurrency) : null;
 
   if (isMiniapp || isMobile) {
     return <MobileCabinetShell />;
@@ -614,16 +624,33 @@ function CabinetShell() {
               </div>
             )}
           </nav>
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <ThemePopover />
             <SettingsPopover />
-            <span className="max-w-[160px] truncate text-sm text-muted-foreground bg-background/30 px-3 py-1.5 rounded-full border border-border" title={state.client?.email?.trim() || (state.client?.telegramUsername ? `@${state.client.telegramUsername}` : "")}>
-              {state.client?.email?.trim() ? state.client.email : state.client?.telegramUsername ? `@${state.client.telegramUsername}` : "—"}
-            </span>
-            <Button variant="outline" size="sm" className="inline-flex items-center gap-2 whitespace-nowrap bg-background/50 hover:bg-background/80 transition-all hover:scale-105" asChild>
-              <Link to="/cabinet/login" onClick={() => logout()}>
-                <LogOut className="h-4 w-4 shrink-0" />
-                Выйти
+            <div className="hidden lg:flex h-9 items-center gap-3 rounded-full border border-border/60 bg-background/35 px-4 shadow-sm backdrop-blur-xl transition-all hover:bg-background/50">
+              <span className="max-w-[120px] xl:max-w-[160px] truncate text-sm font-medium text-muted-foreground" title={state.client?.email?.trim() || (state.client?.telegramUsername ? `@${state.client.telegramUsername}` : "")}>
+                {state.client?.email?.trim() ? state.client.email : state.client?.telegramUsername ? `@${state.client.telegramUsername}` : "—"}
+              </span>
+              <div className="w-[1px] h-4 bg-border/80" />
+              <div className="flex items-center gap-1.5 text-sm font-semibold text-foreground/90">
+                <Wallet className="h-4 w-4 text-primary" />
+                <span>{headerBalance ?? "—"}</span>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              className="group h-9 rounded-full border-border/60 bg-background/35 p-0 shadow-sm backdrop-blur-xl transition-all duration-300 hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive"
+              asChild
+            >
+              <Link to="/cabinet/login" onClick={() => logout()} className="flex h-full items-center">
+                <div className="flex h-full w-9 shrink-0 items-center justify-center">
+                  <LogOut className="h-[18px] w-[18px]" />
+                </div>
+                <div className="grid grid-cols-[0fr] opacity-0 transition-all duration-300 group-hover:grid-cols-[1fr] group-hover:opacity-100">
+                  <span className="overflow-hidden whitespace-nowrap text-sm font-medium">
+                    <span className="pr-4">Выйти</span>
+                  </span>
+                </div>
               </Link>
             </Button>
           </div>

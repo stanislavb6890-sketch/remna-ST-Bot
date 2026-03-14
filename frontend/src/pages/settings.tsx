@@ -667,6 +667,9 @@ export function SettingsPage() {
         landingStatsTariffsLabel: settings.landingStatsTariffsLabel ?? null,
         landingStatsAccessLabel: settings.landingStatsAccessLabel ?? null,
         landingStatsPaymentMethods: settings.landingStatsPaymentMethods ?? null,
+        landingReadyToConnectEyebrow: settings.landingReadyToConnectEyebrow ?? null,
+        landingReadyToConnectTitle: settings.landingReadyToConnectTitle ?? null,
+        landingReadyToConnectDesc: settings.landingReadyToConnectDesc ?? null,
       })
       .then((updated) => {
         const u = updated as AdminSettings;
@@ -3161,6 +3164,30 @@ export function SettingsPage() {
               <p className="text-sm text-muted-foreground">
                 Если включено, по адресу <code>/</code> показывается лендинг (информация, тарифы, контакты). Регистрация ведёт в кабинет. Иначе главная перенаправляет в кабинет/логин.
               </p>
+              <div className="pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={saving}
+                  onClick={async () => {
+                    setSaving(true);
+                    setMessage("");
+                    try {
+                      const updated = await api.resetLandingText(token);
+                      setSettings((prev) => (prev ? { ...prev, ...updated } : prev));
+                      setMessage("Тексты лендинга сброшены на исходные.");
+                    } catch {
+                      setMessage("Ошибка сброса текстов лендинга");
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                >
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                  Вернуть исходные тексты лендинга
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between rounded-lg border p-4">
@@ -3416,6 +3443,18 @@ export function SettingsPage() {
                       <Input placeholder="доступ" value={settings.landingStatsAccessLabel ?? ""} onChange={(e) => setSettings((s) => (s ? { ...s, landingStatsAccessLabel: e.target.value || null } : s))} />
                       <Input placeholder="способа оплаты" value={settings.landingStatsPaymentMethods ?? ""} onChange={(e) => setSettings((s) => (s ? { ...s, landingStatsPaymentMethods: e.target.value || null } : s))} />
                     </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Блок «Ready to connect» (финальный CTA) — подпись</Label>
+                    <Input placeholder="ready to connect" value={settings.landingReadyToConnectEyebrow ?? ""} onChange={(e) => setSettings((s) => (s ? { ...s, landingReadyToConnectEyebrow: e.target.value || null } : s))} />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Блок «Ready to connect» — заголовок</Label>
+                    <Input placeholder="Если честно — теперь это уже не «лендинг», а витрина продукта." value={settings.landingReadyToConnectTitle ?? ""} onChange={(e) => setSettings((s) => (s ? { ...s, landingReadyToConnectTitle: e.target.value || null } : s))} />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Блок «Ready to connect» — описание</Label>
+                    <Textarea rows={3} placeholder="Весь контент продолжает жить в админке, а визуально страница наконец ощущается как сервис, за который не стыдно брать деньги." value={settings.landingReadyToConnectDesc ?? ""} onChange={(e) => setSettings((s) => (s ? { ...s, landingReadyToConnectDesc: e.target.value || null } : s))} />
                   </div>
                   <div className="grid gap-2">
                     <Label>Блок инфраструктуры — заголовок</Label>

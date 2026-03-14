@@ -10,6 +10,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Pencil, Trash2, Ban, ShieldCheck, Wifi, Ticket, KeyRound, Search, Filter } from "lucide-react";
 
 export function ClientsPage() {
@@ -392,26 +399,15 @@ function ClientEditModal({
   savingPassword: boolean;
   token: string;
 }) {
-  useEffect(() => {
-    const onEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onEscape);
-    return () => window.removeEventListener("keydown", onEscape);
-  }, [onClose]);
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border-primary/50 shadow-xl bg-card-solid">
-        <CardHeader className="flex flex-row items-center justify-between shrink-0">
-          <CardTitle>Редактировать клиента</CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClose}>Закрыть</Button>
-        </CardHeader>
-        <div className="overflow-y-auto px-6 pb-6">
-          <div className="mb-4 p-3 rounded-md bg-muted/50 text-sm">
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 gap-0">
+        <DialogHeader className="px-6 pt-6 pb-0 text-left">
+          <DialogTitle>Редактировать клиента</DialogTitle>
+          <DialogDescription className="sr-only">Форма редактирования клиента и лимитов Remna</DialogDescription>
+        </DialogHeader>
+        <div className="px-6 pb-6 pt-4">
+          <div className="mb-4 rounded-xl bg-muted/50 p-3 text-sm">
             <div className="font-medium mb-1">Клиент</div>
             <div className="space-y-0.5 text-muted-foreground">
               {editing.email && <div>Email: {editing.email}</div>}
@@ -432,7 +428,7 @@ function ClientEditModal({
               </div>
             </div>
           </div>
-          <CardContent className="p-0 space-y-6">
+          <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Email</Label>
@@ -715,10 +711,10 @@ function ClientEditModal({
                 )}
               </>
             )}
-          </CardContent>
+          </div>
         </div>
-      </Card>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -733,7 +729,7 @@ function Select({
 }) {
   return (
     <select
-      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+      className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
