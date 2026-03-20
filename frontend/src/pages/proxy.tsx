@@ -411,14 +411,15 @@ cd /opt/proxy-node && docker compose up -d --build`
                 <Download className="h-4 w-4 mr-2" /> Экспорт слотов CSV
               </Button>
               <Button
+                size="sm"
                 onClick={() => {
                   setAddOpen(true);
                   setAddResult(null);
                 }}
                 disabled={creating}
               >
-                {creating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
-                Добавить прокси
+                {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                <span className="hidden sm:inline ml-2">Добавить прокси</span>
               </Button>
             </div>
           </div>
