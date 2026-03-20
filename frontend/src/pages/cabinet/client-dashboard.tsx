@@ -414,8 +414,9 @@ export function ClientDashboardPage() {
               <h2 className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider text-muted-foreground/80 mb-1">Мой баланс</h2>
               <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{formatMoney(client.balance, client.preferredCurrency)}</p>
             </div>
-            <Button size="sm" className="shadow-md hover:scale-105 transition-transform duration-300 rounded-xl sm:rounded-2xl shrink-0" asChild>
+            <Button size="sm" className="gap-1.5 sm:gap-2 shadow-md hover:scale-105 transition-transform duration-300 rounded-xl sm:rounded-2xl shrink-0" asChild>
               <Link to="/cabinet/profile#topup">
+                <PlusCircle className="hidden sm:block h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                 <span className="text-xs sm:text-sm">Пополнить</span>
               </Link>
             </Button>
