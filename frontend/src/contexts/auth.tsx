@@ -3,9 +3,9 @@ import type { Admin, AuthState } from "@/lib/api";
 import { api, setTokenRefreshFn } from "@/lib/api";
 
 const STORAGE_KEYS = {
-  access: "stealthnet_access_token",
-  refresh: "stealthnet_refresh_token",
-  admin: "stealthnet_admin",
+  access: "cloaknet_access_token",
+  refresh: "cloaknet_refresh_token",
+  admin: "cloaknet_admin",
 };
 
 function loadState(): AuthState {

@@ -761,7 +761,7 @@ clientRouter.post("/2fa/setup", async (req, res) => {
   if (current?.totpEnabled) return res.status(400).json({ message: "2FA уже включена" });
   const secret = generateSecret();
   const label = client.email?.trim() || `client-${client.id}`;
-  const otpauthUrl = generateURI({ issuer: "STEALTHNET", label, secret });
+  const otpauthUrl = generateURI({ issuer: "CLOAKNET", label, secret });
   await prisma.client.update({
     where: { id: client.id },
     data: { totpSecret: secret, totpEnabled: false },
@@ -965,7 +965,7 @@ clientRouter.post("/link-email-request", async (req, res) => {
   const appUrl = (config.publicAppUrl || "").replace(/\/$/, "");
   const verificationLink = appUrl ? `${appUrl}/cabinet/verify-link-email?token=${verificationToken}` : "";
   if (!verificationLink) return res.status(500).json({ message: "Не задан URL приложения в настройках" });
-  const sendResult = await sendLinkEmailVerification(smtpConfig, email, verificationLink, config.serviceName ?? "STEALTHNET");
+  const sendResult = await sendLinkEmailVerification(smtpConfig, email, verificationLink, config.serviceName ?? "CLOAKNET");
   if (!sendResult.ok) {
     await prisma.pendingEmailLink.deleteMany({ where: { verificationToken } }).catch(() => {});
     return res.status(500).json({ message: "Не удалось отправить письмо. Попробуйте позже." });
@@ -1641,7 +1641,7 @@ clientRouter.post("/payments/platega", async (req, res) => {
     return res.status(400).json({ message: "Метод оплаты недоступен" });
   }
 
-  const serviceName = config.serviceName?.trim() || "STEALTHNET";
+  const serviceName = config.serviceName?.trim() || "CLOAKNET";
   const orderId = randomUUID();
   const paymentKind = tariffIdToStore ? "tariff" : proxyTariffIdToStore ? "proxy" : singboxTariffIdToStore ? "singbox" : metadataExtra ? "option" : "topup";
   const appUrl = (config.publicAppUrl || "").replace(/\/$/, "");
@@ -2124,7 +2124,7 @@ clientRouter.post("/yoomoney/request-topup", async (req, res) => {
   const receiver = config.yoomoneyReceiverWallet?.trim();
   if (!receiver) return res.status(503).json({ message: "ЮMoney не настроен" });
 
-  const serviceName = config.serviceName?.trim() || "STEALTHNET";
+  const serviceName = config.serviceName?.trim() || "CLOAKNET";
   const amountRounded = Math.round(amount * 100) / 100;
   const orderId = randomUUID();
   const payment = await prisma.payment.create({
@@ -2352,7 +2352,7 @@ clientRouter.post("/yoomoney/create-form-payment", async (req, res) => {
     await prisma.promoCodeUsage.create({ data: { promoCodeId: yoomoneyPromoRecord.id, clientId } });
   }
 
-  const serviceName = config.serviceName?.trim() || "STEALTHNET";
+  const serviceName = config.serviceName?.trim() || "CLOAKNET";
   const appUrl = (config.publicAppUrl || "").replace(/\/$/, "");
   const successURL = appUrl ? `${appUrl}/cabinet?yoomoney_form=success` : "";
   const targets = tariffIdToStore
@@ -2572,7 +2572,7 @@ clientRouter.post("/yookassa/create-payment", async (req, res) => {
       },
     });
 
-    const serviceName = config.serviceName?.trim() || "STEALTHNET";
+    const serviceName = config.serviceName?.trim() || "CLOAKNET";
     const appUrl = (config.publicAppUrl || "").replace(/\/$/, "");
     const returnUrl = appUrl ? `${appUrl}/cabinet?yookassa=success` : "";
     const description = tariffIdToStore
@@ -2734,7 +2734,7 @@ clientRouter.post("/cryptopay/create-payment", async (req, res) => {
       },
     });
 
-    const serviceName = config.serviceName?.trim() || "STEALTHNET";
+    const serviceName = config.serviceName?.trim() || "CLOAKNET";
     const description = tariffIdToStore
       ? `Тариф ${serviceName} #${orderId}`
       : proxyTariffIdToStore
@@ -2893,7 +2893,7 @@ clientRouter.post("/heleket/create-payment", async (req, res) => {
       },
     });
 
-    const serviceName = config.serviceName?.trim() || "STEALTHNET";
+    const serviceName = config.serviceName?.trim() || "CLOAKNET";
     const appUrl = (config.publicAppUrl || "").replace(/\/$/, "");
     const urlCallback = appUrl ? `${appUrl}/api/webhooks/heleket` : undefined;
     const urlSuccess = appUrl ? `${appUrl}/cabinet?heleket=success` : undefined;

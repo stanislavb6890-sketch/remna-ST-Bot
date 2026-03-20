@@ -39,7 +39,7 @@ export async function createYookassaPayment(params: CreatePaymentParams): Promis
     customer: {
       email: (customerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail))
         ? customerEmail.trim()
-        : "noreply@receipt.stealthnet.local",
+        : "noreply@receipt.cloaknet.local",
     },
     items: [
       {

@@ -72,14 +72,14 @@ export async function ensureFirstAdmin(env: Env) {
   const count = await prisma.admin.count();
   if (count > 0) return null;
 
-  const email = process.env.INIT_ADMIN_EMAIL ?? "admin@stealthnet.local";
+  const email = process.env.INIT_ADMIN_EMAIL ?? "admin@CLOAKNET.local";
   const rawPassword = process.env.INIT_ADMIN_PASSWORD ?? generateRandomPassword();
 
   const admin = await createAdmin(email, rawPassword);
 
   if (!process.env.INIT_ADMIN_PASSWORD) {
     console.log("========================================");
-    console.log("STEALTHNET 3.0 — первый админ создан");
+    console.log("CLOAKNET 3.0 — первый админ создан");
     console.log("Email:", email);
     console.log("Пароль (сохраните и смените в админке):", rawPassword);
     console.log("========================================");

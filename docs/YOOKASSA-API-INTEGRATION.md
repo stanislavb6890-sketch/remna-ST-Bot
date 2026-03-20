@@ -6,7 +6,7 @@
 - **ЮMoney кошелёк** (OAuth + request-payment/process-payment) — пополнение/оплата с кошелька пользователя.
 - **ЮMoney форма** (`yoomoney_form`) — редирект на `yoomoney.ru/quickpay/confirm.xml`, HTTP-уведомления с `sha1_hash`.
 
-**ЮKassa API** — отдельный приём платежей картой и другими способами через API магазина (shop_id + secret key). Ниже — выжимка по API и план добавления в STEALTHNET.
+**ЮKassa API** — отдельный приём платежей картой и другими способами через API магазина (shop_id + secret key). Ниже — выжимка по API и план добавления в CLOAKNET.
 
 ---
 
@@ -101,7 +101,7 @@
 
 ---
 
-## 6. План добавления ЮKassa в STEALTHNET
+## 6. План добавления ЮKassa в CLOAKNET
 
 1. **Настройки (SystemSetting):**
    - `yookassa_shop_id` — ID магазина

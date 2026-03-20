@@ -10,8 +10,8 @@ export default defineConfig({
         VitePWA({
             registerType: "autoUpdate",
             manifest: {
-                name: "STEALTHNET Admin",
-                short_name: "StealthNET",
+                name: "CLOAKNET Admin",
+                short_name: "CLOAKNET",
                 theme_color: "#0f172a",
                 icons: [{ src: "/icon-192.png", sizes: "192x192", type: "image/png" }],
             },

@@ -290,7 +290,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
       .catch(() => setTariffs({ items: [] }));
   }, [lc?.showTariffs]);
 
-  const title = lc?.heroTitle || config.serviceName || "STEALTHNET";
+  const title = lc?.heroTitle || config.serviceName || "CLOAKNET";
   const subtitle =
     lc?.heroSubtitle ||
     "Telegram, YouTube, видеозвонки и доступ к любым сервисам в одной подписке. Без ограничений, мусора и скрытых платежей.";
@@ -310,7 +310,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
       };
     })
     : FEATURES_STRIP;
-  const benefitsTitle = lc?.benefitsTitle ?? "Почему STEALTHNET ощущается как продукт, а не костыль";
+  const benefitsTitle = lc?.benefitsTitle ?? "Почему CLOAKNET ощущается как продукт, а не костыль";
   const benefitsSubtitle =
     lc?.benefitsSubtitle ??
     "Всё, что нужно для спокойного доступа, нормальной скорости и уверенного пользовательского опыта, уже собрано в одном месте.";

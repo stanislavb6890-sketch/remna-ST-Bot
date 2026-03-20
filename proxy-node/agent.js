@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * Агент прокси-ноды STEALTHNET: регистрация, heartbeat, слоты → 3proxy (SOCKS5 + HTTP).
- * Переменные: STEALTHNET_API_URL, PROXY_NODE_TOKEN, SOCKS_PORT, HTTP_PORT, CONFIG_PATH, PASSWD_PATH
+ * Агент прокси-ноды CLOAKNET: регистрация, heartbeat, слоты → 3proxy (SOCKS5 + HTTP).
+ * Переменные: CLOAKNET_API_URL, PROXY_NODE_TOKEN, SOCKS_PORT, HTTP_PORT, CONFIG_PATH, PASSWD_PATH
  */
 
 const fs = require("fs");
 const path = require("path");
 const { spawn } = require("child_process");
 
-const API_URL = (process.env.STEALTHNET_API_URL || "").replace(/\/$/, "");
+const API_URL = (process.env.CLOAKNET_API_URL || "").replace(/\/$/, "");
 const TOKEN = process.env.PROXY_NODE_TOKEN || "";
 // Порты: начальные из env, потом обновляются из API панели
 let socksPort = parseInt(process.env.SOCKS_PORT || "1080", 10);
@@ -21,7 +21,7 @@ const POLL_INTERVAL_MS = (parseInt(process.env.POLL_INTERVAL_SEC || "60", 10) ||
 const DEBUG = process.env.DEBUG === "1" || process.env.DEBUG === "true";
 
 if (!API_URL || !TOKEN) {
-  console.error("Set STEALTHNET_API_URL and PROXY_NODE_TOKEN");
+  console.error("Set CLOAKNET_API_URL and PROXY_NODE_TOKEN");
   process.exit(1);
 }
 

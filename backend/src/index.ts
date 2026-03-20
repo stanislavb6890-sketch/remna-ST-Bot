@@ -16,7 +16,7 @@ async function main() {
   startContestDailyReminderScheduler(env.CONTEST_REMINDER_CRON ?? undefined);
 
   const server = app.listen(env.PORT, "0.0.0.0", () => {
-    console.log(`STEALTHNET 3.0 API listening on port ${env.PORT}`);
+    console.log(`CLOAKNET 3.0 API listening on port ${env.PORT}`);
   });
 
   const shutdown = async () => {

@@ -680,7 +680,7 @@ export const api = {
     const blob = await res.blob();
     const disposition = res.headers.get("Content-Disposition") || "";
     const match = /filename="?([^";]+)"?/.exec(disposition);
-    const filename = match ? match[1].trim() : `stealthnet-backup-${new Date().toISOString().slice(0, 10)}.sql`;
+    const filename = match ? match[1].trim() : `cloaknet-backup-${new Date().toISOString().slice(0, 10)}.sql`;
     return { blob, filename };
   },
 
@@ -1715,7 +1715,7 @@ export interface AdminSettings {
   landingReadyToConnectDesc?: string | null;
 }
 
-/** Конфиг страницы подписки (формат как sub.stealthnet.app) */
+/** Конфиг страницы подписки (формат как sub.cloaknet.app) */
 export type SubscriptionPageConfig = {
   locales?: string[];
   version?: string;

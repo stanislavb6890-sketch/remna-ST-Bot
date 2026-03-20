@@ -5,7 +5,7 @@ const DEFAULTS: Array<[string, string]> = [
   ["active_currencies", "usd,rub"],
   ["default_referral_percent", "10"],
   ["trial_days", "3"],
-  ["service_name", "STEALTHNET"],
+  ["service_name", "CLOAKNET"],
   [
     "bot_inner_button_styles",
     '{"tariffPay":"success","topup":"primary","back":"danger","profile":"primary","trialConfirm":"success","lang":"primary","currency":"primary"}',

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/STEALTHNET-3.0-blueviolet?style=for-the-badge&logoColor=white" alt="STEALTHNET 3.0" />
+  <img src="https://img.shields.io/badge/CLOAKNET-3.0-blueviolet?style=for-the-badge&logoColor=white" alt="CLOAKNET 3.0" />
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
 </p>
 
-<h1 align="center">STEALTHNET 3.0</h1>
+<h1 align="center">CLOAKNET 3.0</h1>
 
 <p align="center">
   <b>Полноценная платформа для продажи VPN-подписок</b><br/>
@@ -16,15 +16,15 @@
 </p>
 
 <p align="center">
-  <a href="https://t.me/stealthnet_admin_panel"><img src="https://img.shields.io/badge/Telegram-канал-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" /></a>
+  <a href="https://t.me/CLOAKNET_admin_panel"><img src="https://img.shields.io/badge/Telegram-канал-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" /></a>
 </p>
 
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/ecd37b8e-68ef-4616-92da-550f8bd9cdb5" width="830" alt="STEALTHNET скриншот 1" />
+  <img src="https://github.com/user-attachments/assets/ecd37b8e-68ef-4616-92da-550f8bd9cdb5" width="830" alt="CLOAKNET скриншот 1" />
 </p>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/5c504c46-0b00-47d1-b767-7afed7f36983" width="830" alt="STEALTHNET скриншот 2" />
+  <img src="https://github.com/user-attachments/assets/5c504c46-0b00-47d1-b767-7afed7f36983" width="830" alt="CLOAKNET скриншот 2" />
 </p>
 
 
@@ -51,8 +51,8 @@
 apt install git -y
 curl -fsSL https://get.docker.com | sh
 cd /opt
-git clone https://github.com/systemmaster1200-eng/remnawave-STEALTHNET-Bot.git
-cd remnawave-STEALTHNET-Bot
+git clone https://github.com/systemmaster1200-eng/remnawave-CLOAKNET-Bot.git
+cd remnawave-CLOAKNET-Bot
 bash install.sh
 ```
 
@@ -95,7 +95,7 @@ bash install.sh
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                      STEALTHNET 3.0                      │
+│                      CLOAKNET 3.0                      │
 ├──────────────┬──────────────┬──────────────┬─────────────┤
 │  Telegram    │  Mini App    │  Клиентский  │  Админ-     │
 │  Бот         │  (WebApp)    │  кабинет     │  панель     │
@@ -160,7 +160,7 @@ bash install.sh
 - **Подписки** — активация, продление, проверка статуса
 - **Ноды** — мониторинг, включение/отключение, перезапуск
 - **Сквады** — распределение пользователей по серверам
-- **Синхронизация** — двусторонняя синхронизация данных (Remnawave <-> STEALTHNET)
+- **Синхронизация** — двусторонняя синхронизация данных (Remnawave <-> CLOAKNET)
 - **Вебхуки** — автоматическая обработка событий от Remnawave
 
 ### Мобильная версия и Mini App
@@ -334,11 +334,11 @@ docker compose ps
 
 | Контейнер | Порт | Описание |
 |-----------|------|----------|
-| `stealthnet-postgres` | 5432 (внутр.) | PostgreSQL 16 — база данных |
-| `stealthnet-api` | 5000 | Backend API |
-| `stealthnet-bot` | — | Telegram-бот |
-| `stealthnet-nginx` | 80, 443 | Nginx + SSL (встроенный режим) |
-| `stealthnet-certbot` | — | Автообновление SSL-сертификатов |
+| `CLOAKNET-postgres` | 5432 (внутр.) | PostgreSQL 16 — база данных |
+| `CLOAKNET-api` | 5000 | Backend API |
+| `CLOAKNET-bot` | — | Telegram-бот |
+| `CLOAKNET-nginx` | 80, 443 | Nginx + SSL (встроенный режим) |
+| `CLOAKNET-certbot` | — | Автообновление SSL-сертификатов |
 
 ---
 
@@ -421,15 +421,15 @@ docker compose restart api bot
 
 1. Пример конфига: `nginx/external.conf.example`
 2. API проксируется на `http://127.0.0.1:5000`
-3. Статика фронтенда: `/var/www/stealthnet/` или `frontend/dist/`
+3. Статика фронтенда: `/var/www/CLOAKNET/` или `frontend/dist/`
 
 ```bash
 # Получить SSL
 sudo certbot --nginx -d your-domain.com
 
 # Подключить конфиг
-sudo cp nginx/external.conf.example /etc/nginx/sites-available/stealthnet.conf
-sudo ln -s /etc/nginx/sites-available/stealthnet.conf /etc/nginx/sites-enabled/
+sudo cp nginx/external.conf.example /etc/nginx/sites-available/CLOAKNET.conf
+sudo ln -s /etc/nginx/sites-available/CLOAKNET.conf /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
@@ -438,7 +438,7 @@ sudo nginx -t && sudo systemctl reload nginx
 ## Структура проекта
 
 ```
-remnawave-STEALTHNET-Bot/
+remnawave-CLOAKNET-Bot/
 ├── backend/                  # Backend API
 │   ├── src/
 │   │   ├── index.ts          # Точка входа
@@ -480,7 +480,7 @@ remnawave-STEALTHNET-Bot/
 
 | Источник | Скрипт | Документация |
 |---|---|---|
-| **Старая панель STEALTHNET (Flask)** | `scripts/migrate-from-old-panel.js` | [Подробная инструкция](MIGRATION.md#вариант-1-миграция-из-старой-панели-flask) |
+| **Старая панель CLOAKNET (Flask)** | `scripts/migrate-from-old-panel.js` | [Подробная инструкция](MIGRATION.md#вариант-1-миграция-из-старой-панели-flask) |
 | **Бедолага Бот** | `scripts/migrate-from-bedolaga.js` | [Подробная инструкция](MIGRATION.md#вариант-2-миграция-из-бедолага-бот) |
 
 ### Быстрый старт миграции
@@ -490,8 +490,8 @@ remnawave-STEALTHNET-Bot/
 cd scripts && npm install && cd ..
 
 # 2a. Миграция из старой Flask-панели
-OLD_DB_HOST=localhost OLD_DB_NAME=stealthnet_old \
-NEW_DB_HOST=localhost NEW_DB_NAME=stealthnet \
+OLD_DB_HOST=localhost OLD_DB_NAME=CLOAKNET_old \
+NEW_DB_HOST=localhost NEW_DB_NAME=CLOAKNET \
 node scripts/migrate-from-old-panel.js
 
 # 2b. Миграция из Бедолаги (путь к бэкапу)
@@ -509,7 +509,7 @@ node scripts/migrate-from-bedolaga.js ./backup_20260126_000000.tar.gz
 Вопросы, предложения, баг-репорты — всё сюда:
 
 <p align="center">
-  <a href="https://t.me/stealthnet_admin_panel"><img src="https://img.shields.io/badge/Telegram-@stealthnet__admin__panel-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram канал" /></a>
+  <a href="https://t.me/CLOAKNET_admin_panel"><img src="https://img.shields.io/badge/Telegram-@CLOAKNET__admin__panel-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram канал" /></a>
 </p>
 
 ---
@@ -525,7 +525,7 @@ node scripts/migrate-from-bedolaga.js ./backup_20260126_000000.tar.gz
 ---
 
 <p align="center">
-  <b>STEALTHNET 3.0</b> — продавай VPN красиво.<br/>
+  <b>CLOAKNET 3.0</b> — продавай VPN красиво.<br/>
   <sub>Built with TypeScript, React, Grammy, Prisma, Docker</sub><br/><br/>
-  <a href="https://t.me/stealthnet_admin_panel">Telegram-канал</a>
+  <a href="https://t.me/CLOAKNET_admin_panel">Telegram-канал</a>
 </p>

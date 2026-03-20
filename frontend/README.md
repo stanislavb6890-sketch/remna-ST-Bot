@@ -1,6 +1,6 @@
-# STEALTHNET Admin (Frontend)
+# CLOAKNET Admin (Frontend)
 
-Панель администратора и клиентский кабинет STEALTHNET 3.0.
+Панель администратора и клиентский кабинет CLOAKNET 3.0.
 
 ## Стек
 

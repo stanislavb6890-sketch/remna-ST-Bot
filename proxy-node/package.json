@@ -1,6 +1,6 @@
 {
-  "name": "stealthnet-proxy-node",
+  "name": "CLOAKNET-proxy-node",
   "version": "1.0.0",
-  "description": "Agent for STEALTHNET proxy node",
+  "description": "Agent for CLOAKNET proxy node",
   "main": "agent.js"
 }

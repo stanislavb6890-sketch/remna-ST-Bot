@@ -1,7 +1,7 @@
 {
-  "name": "stealthnet-api",
+  "name": "CLOAKNET-api",
   "version": "3.2.4",
-  "description": "STEALTHNET 3.0 — модульный Web API",
+  "description": "CLOAKNET 3.0 — модульный Web API",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {

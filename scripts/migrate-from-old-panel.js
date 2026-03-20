@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * ═══════════════════════════════════════════════════════════════════
- *  STEALTHNET v3 — Скрипт миграции из старой панели (Flask/SQLAlchemy)
+ *  CLOAKNET v3 — Скрипт миграции из старой панели (Flask/SQLAlchemy)
  * ═══════════════════════════════════════════════════════════════════
  *
  *  Что мигрирует:
@@ -36,18 +36,18 @@ const { Client: PgClient } = require("pg");
 const OLD_DB = {
   host: process.env.OLD_DB_HOST || "localhost",
   port: parseInt(process.env.OLD_DB_PORT || "5432"),
-  database: process.env.OLD_DB_NAME || "stealthnet",
-  user: process.env.OLD_DB_USER || "stealthnet",
-  password: process.env.OLD_DB_PASSWORD || "stealthnet_password_change_me",
+  database: process.env.OLD_DB_NAME || "CLOAKNET",
+  user: process.env.OLD_DB_USER || "CLOAKNET",
+  password: process.env.OLD_DB_PASSWORD || "CLOAKNET_password_change_me",
 };
 
-// Новая БД (STEALTHNET 3.0)
+// Новая БД (CLOAKNET 3.0)
 const NEW_DB = {
   host: process.env.NEW_DB_HOST || "localhost",
   port: parseInt(process.env.NEW_DB_PORT || "5432"),
-  database: process.env.NEW_DB_NAME || "stealthnet",
-  user: process.env.NEW_DB_USER || "stealthnet",
-  password: process.env.NEW_DB_PASSWORD || "stealthnet_change_me",
+  database: process.env.NEW_DB_NAME || "CLOAKNET",
+  user: process.env.NEW_DB_USER || "CLOAKNET",
+  password: process.env.NEW_DB_PASSWORD || "CLOAKNET_change_me",
 };
 
 // Валюта определяется автоматически из system_settings новой панели (ключ default_currency).
@@ -125,7 +125,7 @@ function getPriceForCurrency(tariff, currency) {
 async function migrate() {
   console.log(`
 ╔══════════════════════════════════════════════════════════════╗
-║   STEALTHNET v3 — Миграция из старой панели                  ║
+║   CLOAKNET v3 — Миграция из старой панели                  ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
 
@@ -724,7 +724,7 @@ async function migrate() {
     log("  ", "  1. Проверить данные в админ-панели новой версии");
     log("  ", "  2. Настроить платёжную систему (Platega) в настройках");
     log("  ", "  3. Обновить бот-токен в .env если бот другой");
-    log("  ", "  4. Запустить синхронизацию с Remnawave из панели StealthNet");
+    log("  ", "  4. Запустить синхронизацию с Remnawave из панели CLOAKNET");
   } catch (err) {
     console.error("\n❌ КРИТИЧЕСКАЯ ОШИБКА:", err.message);
     console.error(err.stack);

@@ -22,7 +22,7 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-const UTM_STORAGE_KEY = "stealthnet_utm";
+const UTM_STORAGE_KEY = "cloaknet_utm";
 
 function getUtmFromSearchParams(searchParams: URLSearchParams): Record<string, string> {
   const keys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
@@ -188,8 +188,8 @@ export function ClientRegisterPage() {
     const state = "google_" + Math.random().toString(36).slice(2);
     const nonce = Math.random().toString(36).slice(2);
     try {
-      sessionStorage.setItem("stealthnet_google_oauth_state", state);
-      sessionStorage.setItem("stealthnet_google_oauth_nonce", nonce);
+      sessionStorage.setItem("cloaknet_google_oauth_state", state);
+      sessionStorage.setItem("cloaknet_google_oauth_nonce", nonce);
     } catch {
       // ignore
     }
@@ -213,10 +213,10 @@ export function ClientRegisterPage() {
     const idToken = params.get("id_token");
     if (!idToken) return;
     try {
-      const saved = sessionStorage.getItem("stealthnet_google_oauth_state");
+      const saved = sessionStorage.getItem("cloaknet_google_oauth_state");
       if (saved !== state) return;
-      sessionStorage.removeItem("stealthnet_google_oauth_state");
-      sessionStorage.removeItem("stealthnet_google_oauth_nonce");
+      sessionStorage.removeItem("cloaknet_google_oauth_state");
+      sessionStorage.removeItem("cloaknet_google_oauth_nonce");
     } catch {
       /* ignore */
     }

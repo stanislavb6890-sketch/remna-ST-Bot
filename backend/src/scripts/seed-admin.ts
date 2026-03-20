@@ -7,7 +7,7 @@ import "dotenv/config";
 import { prisma } from "../db.js";
 import { createAdmin } from "../modules/auth/auth.service.js";
 
-const email = process.env.INIT_ADMIN_EMAIL ?? "admin@stealthnet.local";
+const email = process.env.INIT_ADMIN_EMAIL ?? "admin@cloaknet.local";
 const password = process.env.INIT_ADMIN_PASSWORD ?? "ChangeMe123!";
 
 async function seed() {

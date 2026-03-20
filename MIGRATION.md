@@ -1,4 +1,4 @@
-# Миграция на STEALTHNET 3.0
+# Миграция на CLOAKNET 3.0
 
 Инструкции по переносу данных с предыдущих версий панелей.
 
@@ -29,7 +29,7 @@ docker compose ps
 ### 2. Установите зависимости скриптов миграции (один раз)
 
 ```bash
-cd /opt/remnawave-STEALTHNET-Bot/scripts
+cd /opt/remnawave-CLOAKNET-Bot/scripts
 npm install
 cd ..
 ```
@@ -37,7 +37,7 @@ cd ..
 ### 3. Сделайте бэкап новой БД
 
 ```bash
-docker compose exec postgres pg_dump -U stealthnet stealthnet > backup_before_migration.sql
+docker compose exec postgres pg_dump -U CLOAKNET CLOAKNET > backup_before_migration.sql
 ```
 
 ---
@@ -63,11 +63,11 @@ DEFAULT_CURRENCY=rub node scripts/migrate-from-old-panel.js
 ## Вариант 1: Миграция из старой панели (Flask)
 
 > Скрипт: `scripts/migrate-from-old-panel.js`  
-> Источник: PostgreSQL-база предыдущей STEALTHNET-панели (Flask + SQLAlchemy)
+> Источник: PostgreSQL-база предыдущей CLOAKNET-панели (Flask + SQLAlchemy)
 
 ### Что переносится
 
-| Старая панель (Flask) | STEALTHNET 3.0 | Детали |
+| Старая панель (Flask) | CLOAKNET 3.0 | Детали |
 |---|---|---|
 | `User` | `Client` | email, telegram_id, баланс, referral_code, remnawave_uuid, trial_used |
 | `TariffLevel` / поле `tier` | `TariffCategory` | basic → «Базовый», pro → «Премиум», elite → «Элитный» |
@@ -84,17 +84,17 @@ DEFAULT_CURRENCY=rub node scripts/migrate-from-old-panel.js
 ### Запуск
 
 ```bash
-cd /opt/remnawave-STEALTHNET-Bot
+cd /opt/remnawave-CLOAKNET-Bot
 
 OLD_DB_HOST=localhost \
 OLD_DB_PORT=5432 \
-OLD_DB_NAME=stealthnet_old \
-OLD_DB_USER=stealthnet \
+OLD_DB_NAME=CLOAKNET_old \
+OLD_DB_USER=CLOAKNET \
 OLD_DB_PASSWORD=old_password \
 NEW_DB_HOST=localhost \
 NEW_DB_PORT=5432 \
-NEW_DB_NAME=stealthnet \
-NEW_DB_USER=stealthnet \
+NEW_DB_NAME=CLOAKNET \
+NEW_DB_USER=CLOAKNET \
 NEW_DB_PASSWORD=new_password \
 node scripts/migrate-from-old-panel.js
 ```
@@ -107,14 +107,14 @@ node scripts/migrate-from-old-panel.js
 |---|---|---|
 | `OLD_DB_HOST` | `localhost` | Хост старой PostgreSQL |
 | `OLD_DB_PORT` | `5432` | Порт старой БД |
-| `OLD_DB_NAME` | `stealthnet` | Имя старой БД |
-| `OLD_DB_USER` | `stealthnet` | Пользователь старой БД |
-| `OLD_DB_PASSWORD` | `stealthnet_password_change_me` | Пароль старой БД |
+| `OLD_DB_NAME` | `CLOAKNET` | Имя старой БД |
+| `OLD_DB_USER` | `CLOAKNET` | Пользователь старой БД |
+| `OLD_DB_PASSWORD` | `CLOAKNET_password_change_me` | Пароль старой БД |
 | `NEW_DB_HOST` | `localhost` | Хост новой PostgreSQL |
 | `NEW_DB_PORT` | `5432` | Порт новой БД |
-| `NEW_DB_NAME` | `stealthnet` | Имя новой БД |
-| `NEW_DB_USER` | `stealthnet` | Пользователь новой БД |
-| `NEW_DB_PASSWORD` | `stealthnet_change_me` | Пароль новой БД |
+| `NEW_DB_NAME` | `CLOAKNET` | Имя новой БД |
+| `NEW_DB_USER` | `CLOAKNET` | Пользователь новой БД |
+| `NEW_DB_PASSWORD` | `CLOAKNET_change_me` | Пароль новой БД |
 | `DEFAULT_CURRENCY` | *(из system_settings)* | Переопределить валюту (`rub`, `usd`, `uah`) |
 
 ### Пример вывода
@@ -161,7 +161,7 @@ node scripts/migrate-from-old-panel.js
 
 ### Что переносится
 
-| Бедолага Бот | STEALTHNET 3.0 | Детали |
+| Бедолага Бот | CLOAKNET 3.0 | Детали |
 |---|---|---|
 | `users` | `clients` | telegram_id, username, имя, баланс, remnawave_uuid, referral_code |
 | `subscriptions` | обновление `trial_used` | Данные подписок уже в Remnawave — подтянутся через Sync |
@@ -183,7 +183,7 @@ node scripts/migrate-from-old-panel.js
 ### Запуск
 
 ```bash
-cd /opt/remnawave-STEALTHNET-Bot
+cd /opt/remnawave-CLOAKNET-Bot
 
 # Путь к бэкапу как аргумент
 node scripts/migrate-from-bedolaga.js ./backup_20260126_000000.tar.gz
@@ -194,8 +194,8 @@ node scripts/migrate-from-bedolaga.js ./backup_20260126_000000.tar.gz
 ```bash
 NEW_DB_HOST=localhost \
 NEW_DB_PORT=5432 \
-NEW_DB_NAME=stealthnet \
-NEW_DB_USER=stealthnet \
+NEW_DB_NAME=CLOAKNET \
+NEW_DB_USER=CLOAKNET \
 NEW_DB_PASSWORD=new_password \
 KOPEKS_TO_USD=0.0001 \
 node scripts/migrate-from-bedolaga.js ./backup.tar.gz
@@ -207,9 +207,9 @@ node scripts/migrate-from-bedolaga.js ./backup.tar.gz
 |---|---|---|
 | `NEW_DB_HOST` | `localhost` | Хост новой PostgreSQL |
 | `NEW_DB_PORT` | `5432` | Порт |
-| `NEW_DB_NAME` | `stealthnet` | Имя БД |
-| `NEW_DB_USER` | `stealthnet` | Пользователь |
-| `NEW_DB_PASSWORD` | `stealthnet_change_me` | Пароль |
+| `NEW_DB_NAME` | `CLOAKNET` | Имя БД |
+| `NEW_DB_USER` | `CLOAKNET` | Пользователь |
+| `NEW_DB_PASSWORD` | `CLOAKNET_change_me` | Пароль |
 | `DEFAULT_CURRENCY` | *(из system_settings)* | Переопределить валюту |
 | `KOPEKS_TO_USD` | `0.0001` | Курс для USD (1 копейка = X USD). Только при `usd` |
 
@@ -254,7 +254,7 @@ node scripts/migrate-from-bedolaga.js ./backup.tar.gz
 Восстановите бэкап:
 
 ```bash
-docker compose exec -T postgres psql -U stealthnet stealthnet < backup_before_migration.sql
+docker compose exec -T postgres psql -U CLOAKNET CLOAKNET < backup_before_migration.sql
 ```
 
 ### У меня SQLite в старой панели, не PostgreSQL
@@ -264,7 +264,7 @@ docker compose exec -T postgres psql -U stealthnet stealthnet < backup_before_mi
 ### Как узнать, какая валюта стоит в системе?
 
 ```bash
-docker compose exec postgres psql -U stealthnet stealthnet \
+docker compose exec postgres psql -U CLOAKNET CLOAKNET \
   -c "SELECT value FROM system_settings WHERE key = 'default_currency';"
 ```
 
@@ -281,6 +281,6 @@ docker compose exec postgres psql -U stealthnet stealthnet \
 В настройках Бедолага Бот → Бэкапы, или в папке `/app/data/backups/` внутри контейнера:
 
 ```bash
-docker cp stealthnet-bot:/app/data/backups/ ./bedolaga-backups/
+docker cp CLOAKNET-bot:/app/data/backups/ ./bedolaga-backups/
 ls ./bedolaga-backups/
 ```

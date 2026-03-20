@@ -317,7 +317,7 @@ export function SingboxPage() {
   "inbounds": [
     {
       "type": "vless",
-      "tag": "stealthnet-in",
+      "tag": "cloaknet-in",
       "listen": "::",
       "listen_port": ${detailNode.port},
       "users": []
@@ -864,7 +864,7 @@ export function SingboxPage() {
           <DialogHeader>
             <DialogTitle>Конфиг sing-box (JSON)</DialogTitle>
             <DialogDescription>
-              Инбаунд с тегом <code className="rounded bg-muted px-1">stealthnet-in</code> — в него агент подставит пользователей из слотов. Остальное можно менять свободно.
+              Инбаунд с тегом <code className="rounded bg-muted px-1">cloaknet-in</code> — в него агент подставит пользователей из слотов. Остальное можно менять свободно.
             </DialogDescription>
           </DialogHeader>
           <div className="flex-1 min-h-0 flex flex-col gap-2">

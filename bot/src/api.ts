@@ -1,5 +1,5 @@
 /**
- * STEALTHNET 3.0 — API клиент бота (вызовы бэкенда).
+ * CLOAKNET 3.0 — API клиент бота (вызовы бэкенда).
  */
 
 const API_URL = (process.env.API_URL || "").replace(/\/$/, "");

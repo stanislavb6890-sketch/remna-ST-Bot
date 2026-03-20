@@ -2555,7 +2555,7 @@ export function SettingsPage() {
                   <Input
                     value={settings.telegramBotUsername ?? ""}
                     onChange={(e) => setSettings((s) => (s ? { ...s, telegramBotUsername: e.target.value || null } : s))}
-                    placeholder="MyStealthNetBot"
+                    placeholder="MyCLOAKNETBot"
                   />
                 </div>
                 <div className="space-y-2">
@@ -3193,7 +3193,7 @@ export function SettingsPage() {
               <div className="flex items-center justify-between rounded-lg border p-4">
                 <div>
                   <p className="font-medium">Включить лендинг</p>
-                  <p className="text-sm text-muted-foreground">Показывать лендинг на https://panel.stealthnet.app/</p>
+                  <p className="text-sm text-muted-foreground">Показывать лендинг на https://panel.CLOAKNET.app/</p>
                 </div>
                 <Switch
                   checked={settings.landingEnabled ?? false}
@@ -3203,7 +3203,7 @@ export function SettingsPage() {
               <div className="grid gap-2">
                 <Label>Заголовок (hero)</Label>
                 <Input
-                  placeholder="Например: STEALTHNET — быстрый VPN"
+                  placeholder="Например: CLOAKNET — быстрый VPN"
                   value={settings.landingHeroTitle ?? ""}
                   onChange={(e) => setSettings((s) => (s ? { ...s, landingHeroTitle: e.target.value || null } : s))}
                 />

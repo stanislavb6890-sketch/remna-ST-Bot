@@ -74,7 +74,7 @@ export function ClientLoginPage() {
     }
     if (Object.keys(utm).length > 0) {
       try {
-        localStorage.setItem("stealthnet_utm", JSON.stringify(utm));
+        localStorage.setItem("cloaknet_utm", JSON.stringify(utm));
       } catch {
         // ignore
       }
@@ -120,8 +120,8 @@ export function ClientLoginPage() {
     const state = "google_" + Math.random().toString(36).slice(2);
     const nonce = Math.random().toString(36).slice(2);
     try {
-      sessionStorage.setItem("stealthnet_google_oauth_state", state);
-      sessionStorage.setItem("stealthnet_google_oauth_nonce", nonce);
+      sessionStorage.setItem("cloaknet_google_oauth_state", state);
+      sessionStorage.setItem("cloaknet_google_oauth_nonce", nonce);
     } catch {
       // ignore
     }
@@ -145,10 +145,10 @@ export function ClientLoginPage() {
     const idToken = params.get("id_token");
     if (!idToken) return;
     try {
-      const saved = sessionStorage.getItem("stealthnet_google_oauth_state");
+      const saved = sessionStorage.getItem("cloaknet_google_oauth_state");
       if (saved !== state) return;
-      sessionStorage.removeItem("stealthnet_google_oauth_state");
-      sessionStorage.removeItem("stealthnet_google_oauth_nonce");
+      sessionStorage.removeItem("cloaknet_google_oauth_state");
+      sessionStorage.removeItem("cloaknet_google_oauth_nonce");
     } catch {
       /* ignore */
     }

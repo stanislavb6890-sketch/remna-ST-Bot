@@ -1,5 +1,5 @@
 /**
- * STEALTHNET 3.0 — Telegram-бот
+ * CLOAKNET 3.0 — Telegram-бот
  * Полный функционал кабинета: главная, тарифы, профиль, пополнение, триал, реферальная ссылка, VPN.
  * Цветные кнопки: style primary / success / danger (Telegram Bot API).
  */

@@ -2,8 +2,8 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import type { ClientProfile, ClientAuthResponse } from "@/lib/api";
 import { api } from "@/lib/api";
 
-const STORAGE_TOKEN = "stealthnet_client_token";
-const STORAGE_CLIENT = "stealthnet_client_profile";
+const STORAGE_TOKEN = "cloaknet_client_token";
+const STORAGE_CLIENT = "cloaknet_client_profile";
 
 type ClientAuthState = {
   token: string | null;

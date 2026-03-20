@@ -62,7 +62,7 @@ export async function saveBackupToFile(db: DbConnection): Promise<{ relativePath
   const m = String(now.getMonth() + 1).padStart(2, "0");
   const d = String(now.getDate()).padStart(2, "0");
   const time = now.toISOString().replace(/[:.]/g, "-").slice(0, 19);
-  const filename = `stealthnet-backup-${time}.sql`;
+  const filename = `cloaknet-backup-${time}.sql`;
   const dirPath = path.join(BACKUPS_DIR, String(y), m, d);
   const fullPath = path.join(dirPath, filename);
   const relativePath = path.join(String(y), m, d, filename);
@@ -211,7 +211,7 @@ GRANT CREATE ON SCHEMA public TO public;
 export async function runPgRestore(db: DbConnection, sqlBuffer: Buffer): Promise<void> {
   await runPsql(db, CLEAN_SCHEMA_SQL);
 
-  const dir = await mkdtemp(path.join(tmpdir(), "stealthnet-restore-"));
+  const dir = await mkdtemp(path.join(tmpdir(), "cloaknet-restore-"));
   const sqlPath = path.join(dir, "restore.sql");
   try {
     const sqlContent = filterSqlForRestore(sqlBuffer);

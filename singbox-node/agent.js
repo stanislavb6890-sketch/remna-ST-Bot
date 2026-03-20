@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 /**
- * Агент sing-box ноды STEALTHNET: регистрация, heartbeat, слоты → конфиг sing-box (JSON).
- * Переменные: STEALTHNET_API_URL, SINGBOX_NODE_TOKEN, PROTOCOL, PORT, CONFIG_PATH, POLL_INTERVAL_SEC
+ * Агент sing-box ноды CLOAKNET: регистрация, heartbeat, слоты → конфиг sing-box (JSON).
+ * Переменные: CLOAKNET_API_URL, SINGBOX_NODE_TOKEN, PROTOCOL, PORT, CONFIG_PATH, POLL_INTERVAL_SEC
  */
 
 const fs = require("fs");
 const path = require("path");
 const { spawn, spawnSync } = require("child_process");
 
-const API_URL = (process.env.STEALTHNET_API_URL || "").replace(/\/$/, "");
+const API_URL = (process.env.CLOAKNET_API_URL || "").replace(/\/$/, "");
 const TOKEN = process.env.SINGBOX_NODE_TOKEN || "";
 const CONFIG_PATH = process.env.CONFIG_PATH || path.join(__dirname, "config.json");
 const APP_DIR = path.dirname(CONFIG_PATH);
 const CERT_PATH = path.join(APP_DIR, "cert.pem");
 const KEY_PATH = path.join(APP_DIR, "key.pem");
 const POLL_INTERVAL_MS = (parseInt(process.env.POLL_INTERVAL_SEC || "60", 10) || 60) * 1000;
-const MANAGED_INBOUND_TAG = "stealthnet-in";
+const MANAGED_INBOUND_TAG = "CLOAKNET-in";
 
 // Из API приходят: protocol, port, tlsEnabled, customConfigJson, slots[]
 let protocol = (process.env.PROTOCOL || "VLESS").toUpperCase();
@@ -31,7 +31,7 @@ let singboxProcess = null;
 let lastSlotsSignature = null;
 
 if (!API_URL || !TOKEN) {
-  console.error("Set STEALTHNET_API_URL and SINGBOX_NODE_TOKEN");
+  console.error("Set CLOAKNET_API_URL and SINGBOX_NODE_TOKEN");
   process.exit(1);
 }
 
@@ -70,7 +70,7 @@ function ensureTlsCert() {
     return { certPath: CERT_PATH, keyPath: KEY_PATH };
   }
   if (!fs.existsSync(APP_DIR)) fs.mkdirSync(APP_DIR, { recursive: true });
-  const subj = "/CN=stealthnet-inbound";
+  const subj = "/CN=CLOAKNET-inbound";
   const r = spawnSync("openssl", [
     "req", "-x509", "-newkey", "rsa:2048",
     "-keyout", KEY_PATH, "-out", CERT_PATH,
@@ -151,7 +151,7 @@ function buildDefaultConfig(portVal, users, tlsPaths) {
   };
 }
 
-/** Подставляет users в кастомный конфиг (инбаунд с тегом stealthnet-in). Для HYSTERIA2/TROJAN подставляет реальные пути к сертификатам. */
+/** Подставляет users в кастомный конфиг (инбаунд с тегом CLOAKNET-in). Для HYSTERIA2/TROJAN подставляет реальные пути к сертификатам. */
 function mergeCustomConfig(customJson, users) {
   let config;
   try {

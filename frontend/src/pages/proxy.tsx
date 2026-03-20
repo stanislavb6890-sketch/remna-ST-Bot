@@ -63,7 +63,7 @@ function statusBadge(status: string) {
   );
 }
 
-const HEREDOC_MARKER = "ENDOFSTEALTHNET_COMPOSE";
+const HEREDOC_MARKER = "ENDOFCLOAKNET_COMPOSE";
 
 type ProxyTariffItem = {
   id: string;
@@ -325,7 +325,7 @@ export function ProxyPage() {
   }
 
   const publicUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const composeWithUrl = addResult?.dockerCompose.replace("{{STEALTHNET_API_URL}}", publicUrl) ?? addResult?.dockerCompose ?? "";
+  const composeWithUrl = addResult?.dockerCompose.replace("{{CLOAKNET_API_URL}}", publicUrl) ?? addResult?.dockerCompose ?? "";
 
   const installScript = addResult
     ? `mkdir -p /opt/proxy-node && cat > /opt/proxy-node/docker-compose.yml << '${HEREDOC_MARKER}'

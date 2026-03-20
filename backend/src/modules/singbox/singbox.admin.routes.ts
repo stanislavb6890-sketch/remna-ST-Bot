@@ -92,20 +92,20 @@ singboxAdminRouter.post("/nodes", asyncRoute(async (req, res) => {
     },
   });
   const config = await getSystemConfig();
-  const apiUrl = (config.publicAppUrl || "").trim().replace(/\/$/, "") || "{{STEALTHNET_API_URL}}";
-  const dockerCompose = `# STEALTHNET — sing-box нода (агент + heartbeat)
-# STEALTHNET_API_URL берётся из настроек панели. Если не задан — замените вручную.
+  const apiUrl = (config.publicAppUrl || "").trim().replace(/\/$/, "") || "{{CLOAKNET_API_URL}}";
+  const dockerCompose = `# CLOAKNET — sing-box нода (агент + heartbeat)
+# CLOAKNET_API_URL берётся из настроек панели. Если не задан — замените вручную.
 # На сервере: docker compose up -d --build
 
 services:
   singbox-node:
     build:
-      context: https://github.com/systemmaster1200-eng/remnawave-STEALTHNET-Bot.git
+      context: https://github.com/systemmaster1200-eng/remnawave-CLOAKNET-Bot.git
       dockerfile: singbox-node/Dockerfile
-    image: stealthnet/singbox-node:latest
+    image: CLOAKNET/singbox-node:latest
     restart: unless-stopped
     environment:
-      STEALTHNET_API_URL: ${apiUrl}
+      CLOAKNET_API_URL: ${apiUrl}
       SINGBOX_NODE_TOKEN: ${token}
       PROTOCOL: "${protocol}"
       PORT: "${port}"
@@ -125,8 +125,8 @@ services:
       createdAt: node.createdAt.toISOString(),
     },
     dockerCompose,
-    instructions: apiUrl === "{{STEALTHNET_API_URL}}"
-      ? "Скопируйте блок выше. Укажите URL панели в настройках или замените {{STEALTHNET_API_URL}} вручную. Сохраните как docker-compose.yml и выполните: docker compose up -d --build"
+    instructions: apiUrl === "{{CLOAKNET_API_URL}}"
+      ? "Скопируйте блок выше. Укажите URL панели в настройках или замените {{CLOAKNET_API_URL}} вручную. Сохраните как docker-compose.yml и выполните: docker compose up -d --build"
       : "Скопируйте блок выше. URL панели подставлен. Сохраните как docker-compose.yml и выполните: docker compose up -d --build",
   });
 }));

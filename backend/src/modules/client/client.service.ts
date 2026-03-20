@@ -421,7 +421,7 @@ export async function getSystemConfig() {
     trialSquadUuid: map.trial_squad_uuid || null,
     trialDeviceLimit: map.trial_device_limit != null && map.trial_device_limit !== "" ? parseInt(map.trial_device_limit, 10) : null,
     trialTrafficLimitBytes: map.trial_traffic_limit != null && map.trial_traffic_limit !== "" ? parseInt(map.trial_traffic_limit, 10) : null,
-    serviceName: map.service_name || "STEALTHNET",
+    serviceName: map.service_name || "CLOAKNET",
     logo: map.logo || null,
     logoBot: map.logo_bot || null,
     favicon: map.favicon || null,

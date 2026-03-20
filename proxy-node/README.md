@@ -1,10 +1,10 @@
-# Прокси-нода STEALTHNET
+# Прокси-нода CLOAKNET
 
 Контейнер для запуска на сервере админа. Регистрируется в панели по токену, шлёт heartbeat, получает список слотов (логин/пароль) для генерации конфига прокси.
 
 ## Переменные окружения
 
-- `STEALTHNET_API_URL` — URL API панели (например https://panel.example.com)
+- `CLOAKNET_API_URL` — URL API панели (например https://panel.example.com)
 - `PROXY_NODE_TOKEN` — токен ноды (из админки «Добавить прокси»)
 - `SOCKS_PORT` — порт SOCKS5 (по умолчанию 1080)
 - `HTTP_PORT` — порт HTTP-прокси (по умолчанию 8080)
@@ -30,10 +30,10 @@
 Из корня репозитория (для Dockerfile с путями `proxy-node/...`):
 
 ```bash
-docker build -f proxy-node/Dockerfile -t stealthnet/proxy-node:latest .
+docker build -f proxy-node/Dockerfile -t CLOAKNET/proxy-node:latest .
 ```
 
-Далее используйте docker-compose из админки (образ уже указан как `stealthnet/proxy-node:latest`).
+Далее используйте docker-compose из админки (образ уже указан как `CLOAKNET/proxy-node:latest`).
 
 ## Реализация (Phase 1.5)
 

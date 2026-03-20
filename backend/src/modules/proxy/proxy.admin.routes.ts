@@ -89,21 +89,21 @@ proxyAdminRouter.post("/nodes", asyncRoute(async (req, res) => {
     },
   });
   const config = await getSystemConfig();
-  const apiUrl = (config.publicAppUrl || "").trim().replace(/\/$/, "") || "{{STEALTHNET_API_URL}}";
-  const dockerCompose = `# STEALTHNET — прокси-нода (агент + heartbeat)
-# STEALTHNET_API_URL берётся из настроек панели (URL приложения). Если не задан — замените вручную.
+  const apiUrl = (config.publicAppUrl || "").trim().replace(/\/$/, "") || "{{CLOAKNET_API_URL}}";
+  const dockerCompose = `# CLOAKNET — прокси-нода (агент + heartbeat)
+# CLOAKNET_API_URL берётся из настроек панели (URL приложения). Если не задан — замените вручную.
 # На сервере: docker compose up -d --build
 # (образ собирается из репозитория, не требуется Docker Hub)
 
 services:
   proxy-node:
     build:
-      context: https://github.com/systemmaster1200-eng/remnawave-STEALTHNET-Bot.git
+      context: https://github.com/systemmaster1200-eng/remnawave-CLOAKNET-Bot.git
       dockerfile: proxy-node/Dockerfile
-    image: stealthnet/proxy-node:latest
+    image: CLOAKNET/proxy-node:latest
     restart: unless-stopped
     environment:
-      STEALTHNET_API_URL: ${apiUrl}
+      CLOAKNET_API_URL: ${apiUrl}
       PROXY_NODE_TOKEN: ${token}
       SOCKS_PORT: "${socksPort}"
       HTTP_PORT: "${httpPort}"
@@ -120,8 +120,8 @@ services:
       createdAt: node.createdAt.toISOString(),
     },
     dockerCompose,
-    instructions: apiUrl === "{{STEALTHNET_API_URL}}"
-      ? "Скопируйте блок выше. Укажите URL панели в настройках (Настройки → URL приложения) или замените {{STEALTHNET_API_URL}} вручную. Сохраните как docker-compose.yml на сервере и выполните: docker compose up -d --build"
+    instructions: apiUrl === "{{CLOAKNET_API_URL}}"
+      ? "Скопируйте блок выше. Укажите URL панели в настройках (Настройки → URL приложения) или замените {{CLOAKNET_API_URL}} вручную. Сохраните как docker-compose.yml на сервере и выполните: docker compose up -d --build"
       : "Скопируйте блок выше. URL панели уже подставлен из настроек. Сохраните как docker-compose.yml на сервере и выполните: docker compose up -d --build",
   });
 }));

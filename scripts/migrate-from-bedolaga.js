@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * ═══════════════════════════════════════════════════════════════════
- *  STEALTHNET v3 — Миграция из бэкапа «Бедолага Бот»
+ *  CLOAKNET v3 — Миграция из бэкапа «Бедолага Бот»
  * ═══════════════════════════════════════════════════════════════════
  *
  *  Бэкап формата database.json (tar.gz) из Bedolaga Telegram Bot.
@@ -43,9 +43,9 @@ const BACKUP_PATH =
 const NEW_DB = {
   host: process.env.NEW_DB_HOST || "localhost",
   port: parseInt(process.env.NEW_DB_PORT || "5432"),
-  database: process.env.NEW_DB_NAME || "stealthnet",
-  user: process.env.NEW_DB_USER || "stealthnet",
-  password: process.env.NEW_DB_PASSWORD || "stealthnet_change_me",
+  database: process.env.NEW_DB_NAME || "CLOAKNET",
+  user: process.env.NEW_DB_USER || "CLOAKNET",
+  password: process.env.NEW_DB_PASSWORD || "CLOAKNET_change_me",
 };
 
 // Валюта определяется автоматически из system_settings новой панели.
@@ -145,7 +145,7 @@ function extractBackup(backupPath) {
 async function migrate() {
   console.log(`
 ╔══════════════════════════════════════════════════════════════╗
-║   STEALTHNET v3 — Миграция из бэкапа Бедолага Бот            ║
+║   CLOAKNET v3 — Миграция из бэкапа Бедолага Бот            ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
 
