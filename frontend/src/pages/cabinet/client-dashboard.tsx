@@ -408,17 +408,19 @@ export function ClientDashboardPage() {
         </section>
 
         {/* 3. Баланс */}
-        <section className="rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl p-6 shadow-sm overflow-hidden flex items-center justify-between transition-all duration-300">
-          <div>
-            <h2 className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground/80 mb-1">Мой баланс</h2>
-            <p className="text-3xl font-bold tracking-tight text-foreground">{formatMoney(client.balance, client.preferredCurrency)}</p>
+        <section className="rounded-3xl border border-border/50 bg-card/40 backdrop-blur-xl p-4 sm:p-6 shadow-sm overflow-hidden transition-all duration-300">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider text-muted-foreground/80 mb-1">Мой баланс</h2>
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{formatMoney(client.balance, client.preferredCurrency)}</p>
+            </div>
+            <Button size="sm" className="gap-1.5 sm:gap-2 shadow-md hover:scale-105 transition-transform duration-300 rounded-xl sm:rounded-2xl shrink-0" asChild>
+              <Link to="/cabinet/profile#topup">
+                <PlusCircle className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                <span className="text-xs sm:text-sm">Пополнить</span>
+              </Link>
+            </Button>
           </div>
-          <Button className="gap-2 shadow-md hover:scale-105 transition-transform duration-300 rounded-2xl h-12 px-5" asChild>
-            <Link to="/cabinet/profile#topup">
-              <PlusCircle className="h-5 w-5 shrink-0" />
-              Пополнить
-            </Link>
-          </Button>
         </section>
       </div>
     );
