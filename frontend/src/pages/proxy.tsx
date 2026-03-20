@@ -348,15 +348,15 @@ cd /opt/proxy-node && docker compose up -d --build`
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full max-w-lg grid-cols-3">
-          <TabsTrigger value="nodes" className="gap-2">
-            <Server className="h-4 w-4" /> Ноды
+        <TabsList className="grid w-full max-w-lg grid-cols-3 overflow-x-auto">
+          <TabsTrigger value="nodes" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+            <Server className="h-4 w-4 shrink-0" /> <span className="hidden sm:inline">Ноды</span><span className="sm:hidden">Нод</span>
           </TabsTrigger>
-          <TabsTrigger value="slots" className="gap-2">
-            <Users className="h-4 w-4" /> Слоты
+          <TabsTrigger value="slots" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+            <Users className="h-4 w-4 shrink-0" /> <span className="hidden sm:inline">Слоты</span><span className="sm:hidden">Слот</span>
           </TabsTrigger>
-          <TabsTrigger value="categories" className="gap-2">
-            <Layers className="h-4 w-4" /> Категории и тарифы
+          <TabsTrigger value="categories" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+            <Layers className="h-4 w-4 shrink-0" /> <span className="hidden sm:inline">Категории и тарифы</span><span className="sm:hidden">Категории</span>
           </TabsTrigger>
         </TabsList>
 
