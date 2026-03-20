@@ -1,6 +1,6 @@
 ###############################################################################
 #  CLOAKNET 3.0 — Docker Compose
-#  Репозиторий: https://github.com/CLOAKNET-APP/remnawave-CLOAKNET-Bot
+#  Репозиторий: https://github.com/stanislavb6890-sketch/remna-ST-Bot
 #  Запуск: docker compose up -d
 ###############################################################################
 name: CLOAKNET

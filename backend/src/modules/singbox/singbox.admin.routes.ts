@@ -100,7 +100,7 @@ singboxAdminRouter.post("/nodes", asyncRoute(async (req, res) => {
 services:
   singbox-node:
     build:
-      context: https://github.com/systemmaster1200-eng/remnawave-CLOAKNET-Bot.git
+      context: https://github.com/stanislavb6890-sketch/remna-ST-Bot.git
       dockerfile: singbox-node/Dockerfile
     image: CLOAKNET/singbox-node:latest
     restart: unless-stopped

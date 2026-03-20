@@ -98,7 +98,7 @@ proxyAdminRouter.post("/nodes", asyncRoute(async (req, res) => {
 services:
   proxy-node:
     build:
-      context: https://github.com/systemmaster1200-eng/remnawave-CLOAKNET-Bot.git
+      context: https://github.com/stanislavb6890-sketch/remna-ST-Bot.git
       dockerfile: proxy-node/Dockerfile
     image: CLOAKNET/proxy-node:latest
     restart: unless-stopped
