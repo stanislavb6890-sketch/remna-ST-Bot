@@ -114,7 +114,7 @@ const JOURNEY_STEPS = [
   },
   {
     icon: Rocket,
-    title: "Подключаешься без боли",
+    title: "Подключаешься за минуту",
     desc: "После оплаты бот или личный кабинет сразу выдадут все инструкции. Настройка за 1 минуту.",
   },
 ];
@@ -879,7 +879,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
             <motion.div {...fadeUp} transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }} className="rounded-[32px] border border-slate-200/60 dark:border-white/10 p-6 text-white shadow-[0_24px_70px_rgba(15,23,42,0.18)] md:p-8 dark:border-white/10" style={darkPanelStyle}>
               <p className="text-xs uppercase tracking-[0.32em]" style={{ color: withAlpha(accentTheme.tertiary, 0.8) }}>быстрый старт</p>
-              <h3 className="mt-4 text-3xl font-black tracking-[-0.04em] md:text-4xl">Премиальный сервис без технической боли</h3>
+              <h3 className="mt-4 text-3xl font-black tracking-[-0.04em] md:text-4xl">VPN, который просто работает</h3>
               <div className="mt-6 space-y-4 text-sm leading-7 text-slate-300 md:text-base">
                 <p>Один аккаунт, одна подписка — и всё работает. Зарегистрировался, оплатил, подключил.</p>
                 <p>Наша цель — инструмент, который просто работает. Всегда, везде и на любом устройстве.</p>
