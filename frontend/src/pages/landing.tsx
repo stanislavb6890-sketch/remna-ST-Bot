@@ -565,11 +565,13 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 </div>
               </div>
 
-              <div className="mt-7 grid gap-4 md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-                <div className="rounded-[30px] border border-slate-200/80 dark:border-white/12 bg-slate-950 p-5 text-white shadow-xl shadow-slate-950/15 dark:border-white/12 dark:bg-slate-900/90">
-                  <p className="text-xs uppercase tracking-[0.28em]" style={{ color: withAlpha(accentTheme.tertiary, 0.78) }}>главные принципы</p>
-                  <p className="mt-4 text-2xl font-black leading-tight tracking-[-0.04em]">
-                    Мы строим сервис, которому доверяют. Без компромиссов в скорости.
+              <div className="mt-7">
+                <div className="rounded-[24px] border border-slate-200/80 dark:border-white/12 bg-white/90 dark:bg-white/7 p-5 backdrop-blur-xl">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                    Зарегистрировался → оплатил → подключил
+                  </p>
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                    Тарифы и условия — в кабинете. Регистрация за минуту.
                   </p>
                 </div>
               </div>
