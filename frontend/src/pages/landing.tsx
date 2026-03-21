@@ -12,7 +12,6 @@ import {
   Check,
   ChevronDown,
   CreditCard,
-  Globe,
   LayoutDashboard,
   Lock,
   Monitor,
@@ -20,7 +19,6 @@ import {
   Shield,
   Smartphone,
   Sparkles,
-  Star,
   Terminal,
   Zap,
   type LucideIcon,
@@ -122,8 +120,7 @@ const JOURNEY_STEPS = [
 ];
 
 
-const EXPERIENCE_PANELS = [];
-const TRUST_POINTS: string[] = [];
+
 
 const SECTION_SCROLL_OFFSET = "scroll-mt-24 md:scroll-mt-28";
 
@@ -574,33 +571,6 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   <p className="mt-4 text-2xl font-black leading-tight tracking-[-0.04em]">
                     Мы строим сервис, которому доверяют. Без компромиссов в скорости.
                   </p>
-                  <div className="mt-6 space-y-4">
-                    {TRUST_POINTS.map((point) => (
-                      <div key={point} className="flex items-start gap-3 rounded-[22px] border border-white/10 bg-white/7 px-4 py-3">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: accentTheme.tertiary }} />
-                        <span className="text-sm leading-6 text-slate-200">{point}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {EXPERIENCE_PANELS.map(({ icon: Icon, title: itemTitle, desc }, index) => (
-                    <motion.div
-                      key={itemTitle}
-                      initial={{ opacity: 0, y: 18 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: index * 0.08 }}
-                      className={`rounded-[28px] border border-slate-200/80 dark:border-white/12 bg-white/95 dark:bg-white/5 p-5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/6 ${index === 2 ? "sm:col-span-2" : ""}`}
-                    >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ ...accentGlowStyle, color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}>
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <h3 className="mt-4 text-lg font-semibold text-slate-950 dark:text-white">{itemTitle}</h3>
-                      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">{desc}</p>
-                    </motion.div>
-                  ))}
                 </div>
               </div>
             </div>
