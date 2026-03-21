@@ -38,70 +38,41 @@ const FEATURES_STRIP: LandingFeatureItem[] = [
   {
     icon: Shield,
     label: "Защита",
-    sub: "AES-256 шифрование",
-    desc: "Современные протоколы и аккуратная защита трафика без ощущения технарского конструктора.",
-    chips: ["Шифрование", "Стабильность"],
-  },
-  {
-    icon: Lock,
-    label: "Zero-Log",
-    sub: "История не сохраняется",
-    desc: "Доступ строится вокруг приватности: без лишних следов, без визуального мусора и без тревоги за данные.",
-    chips: ["Zero-Log", "Приватность"],
-  },
-  {
-    icon: Star,
-    label: "Оплата",
-    sub: "Анонимно и безопасно",
-    desc: "Карта, СБП, кошелёк и крипта собираются в один понятный сценарий оплаты без сюрпризов.",
-    chips: ["Карта / СБП", "Крипта"],
+    sub: "Шифрование и никаких логов",
+    desc: "Трафик зашифрован, история не сохраняется. Никаких следов — никакой головной боли.",
+    chips: ["Zero-Log", "Шифрование"],
   },
   {
     icon: Zap,
-    label: "Серверы",
-    sub: "Собственная инфраструктура",
-    desc: "Свои мощности и продуманная маршрутизация дают нормальную скорость и предсказуемую работу сервиса.",
-    chips: ["Скорость", "Своя сеть"],
+    label: "Скорость",
+    sub: "Свои серверы без просадок",
+    desc: "Собственная инфраструктура — видео, звонки и всё остальное работает без тормозов.",
+    chips: ["Своя сеть", "Без ограничений"],
   },
   {
-    icon: Smartphone,
-    label: "Установка",
-    sub: "За 30 секунд",
-    desc: "Минимум кликов до подключения: зарегистрировался, оплатил и сразу получил инструкции внутри кабинета.",
-    chips: ["Быстрый старт", "Все устройства"],
+    icon: CreditCard,
+    label: "Оплата",
+    sub: "Карта, СБП, крипта",
+    desc: "Выбираешь удобный способ — и сразу получаешь доступ. Никакой лишней волокиты.",
+    chips: ["Карта / СБП", "Крипта"],
   },
 ];
 
 const BENEFITS = [
   {
     icon: Zap,
-    title: "Всегда онлайн",
-    desc: "Работает стабильно даже в перегруженных сетях. Быстрый доступ с мобильного и десктопа без возни с настройками.",
-  },
-  {
-    icon: Globe,
-    title: "РФ-сервисы за границей",
-    desc: "Смотри, звони, работай и плати без лишних плясок — маршруты уже продуманы под реальные сценарии.",
-  },
-  {
-    icon: Shield,
-    title: "Без посредников",
-    desc: "Своя инфраструктура, аккуратная маршрутизация и понятный личный кабинет вместо хаоса из сторонних сервисов.",
+    title: "Своя инфраструктура",
+    desc: "Серверы, которые не падают когда надо. Своя маршрутизация — без неожиданных просадок.",
   },
   {
     icon: Lock,
-    title: "Чистая приватность",
-    desc: "Шифрование, маскировка и аккуратная архитектура без ощущения, что ты подключаешь что-то сомнительное.",
+    title: "Приватность по умолчанию",
+    desc: "Zero-log политика: мы не храним историю активности и не привязываем действия к личности.",
   },
   {
     icon: LayoutDashboard,
-    title: "Управление в одном месте",
-    desc: "Telegram-бот, кабинет, тарифы, продление, инструкции и поддержка — всё собрано в единую систему.",
-  },
-  {
-    icon: Sparkles,
-    title: "Красиво и понятно",
-    desc: "Нормальный продуктовый опыт: от первого экрана до покупки всё выглядит премиально и читается без боли.",
+    title: "Подключение за минуту",
+    desc: "Зарегистрировался, оплатил — и сразу получил инструкции и доступ внутри кабинета.",
   },
 ];
 
@@ -151,29 +122,8 @@ const JOURNEY_STEPS = [
 ];
 
 
-const EXPERIENCE_PANELS = [
-  {
-    icon: Sparkles,
-    title: "Никаких зависаний",
-    desc: "Смотри видео в 4K, играй в игры и работай без задержек.",
-  },
-  {
-    icon: Zap,
-    title: "Мгновенное подключение",
-    desc: "Достаточно нажать одну кнопку, чтобы оказаться в защищенной сети.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Удобный кабинет",
-    desc: "Управляй подпиской, устройствами и получай поддержку в пару кликов.",
-  },
-];
-
-const TRUST_POINTS = [
-  "Современные протоколы шифрования",
-  "Строгая политика Zero-Log: мы не храним данные",
-  "Высокая пропускная способность без ограничений",
-];
+const EXPERIENCE_PANELS = [];
+const TRUST_POINTS: string[] = [];
 
 const SECTION_SCROLL_OFFSET = "scroll-mt-24 md:scroll-mt-28";
 
@@ -293,9 +243,9 @@ export function LandingPage({ config }: { config: PublicConfig }) {
   const title = lc?.heroTitle || config.serviceName || "CLOAKNET";
   const subtitle =
     lc?.heroSubtitle ||
-    "Telegram, YouTube, видеозвонки и доступ к любым сервисам в одной подписке. Без ограничений, мусора и скрытых платежей.";
+    "Один аккаунт — Telegram, YouTube, видеозвонки и всё остальное. Без блокировок, без лишних действий.";
   const ctaText = lc?.heroCtaText || "Начать сейчас";
-  const heroBadge = lc?.heroBadge ?? "Приватность, скорость и доступ";
+  const heroBadge = lc?.heroBadge ?? "Приватность · Скорость · Доступ";
   const heroHint = lc?.heroHint ?? "Регистрация за минуту · Оплата картой, СБП, кошельком и криптой";
   const featuresList = lc?.features?.length
     ? lc.features.map((feature: { label?: string | null; sub?: string | null }, index: number) => {
@@ -310,10 +260,10 @@ export function LandingPage({ config }: { config: PublicConfig }) {
       };
     })
     : FEATURES_STRIP;
-  const benefitsTitle = lc?.benefitsTitle ?? "Почему CLOAKNET ощущается как продукт, а не костыль";
+  const benefitsTitle = lc?.benefitsTitle ?? "Почему выбирают нас";
   const benefitsSubtitle =
     lc?.benefitsSubtitle ??
-    "Всё, что нужно для спокойного доступа, нормальной скорости и уверенного пользовательского опыта, уже собрано в одном месте.";
+    "Спокойный доступ, нормальная скорость и уверенный пользовательский опыт — уже внутри.";
   const benefitsList = lc?.benefits?.length
     ? lc.benefits.map((benefit: any, index: number) => ({
       icon: BENEFITS[index]?.icon ?? Sparkles,
@@ -449,9 +399,9 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               </div>
 
               <h1 className="max-w-5xl text-5xl font-black leading-[0.9] tracking-[-0.06em] text-slate-950 md:text-6xl lg:text-[5.4rem] dark:text-white">
-                Тихий доступ,
+                Доступ к тому,
                 <span className="block bg-clip-text text-transparent" style={accentTextStyle}>
-                  который выглядит дорого.
+                  что важно.
                 </span>
               </h1>
 
@@ -502,24 +452,6 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 )}
               </div>
 
-              <div className="mt-8 grid gap-3 md:max-w-2xl md:grid-cols-3">
-                {JOURNEY_STEPS.map(({ icon: Icon, title: stepTitle }, index) => (
-                  <motion.div
-                    key={stepTitle}
-                    initial={{ opacity: 0, y: 14 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.35, delay: index * 0.08 }}
-                    className="rounded-[24px] border border-slate-200/60 dark:border-white/10 bg-white/70 dark:bg-white/5 p-4 backdrop-blur-xl dark:border-white/10 dark:bg-white/6"
-                  >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl" style={{ ...accentGlowStyle, color: resolvedMode === "dark" ? accentTheme.tertiary : accentTheme.primary }}>
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <p className="mt-3 text-sm font-semibold text-slate-900 dark:text-white">0{index + 1}. {stepTitle}</p>
-                  </motion.div>
-                ))}
-              </div>
-
               <div className="mt-10 grid gap-4 sm:grid-cols-3">
                 {heroStats.map((item, index) => (
                   <motion.div
@@ -559,7 +491,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 </div>
 
                 <div className="mt-6 grid gap-3">
-                  {featuresList.slice(0, 4).map(({ icon: Icon, label, sub }: any, index: number) => (
+                  {featuresList.slice(0, 3).map(({ icon: Icon, label, sub }: any, index: number) => (
                     <motion.div
                       key={label}
                       initial={{ opacity: 0, x: 18 }}
@@ -599,11 +531,9 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
                   <div className="rounded-[28px] border border-slate-200/80 dark:border-white/12 bg-white/95 dark:bg-white/5 p-5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/6">
                     <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">быстрый старт</p>
-                    <ul className="mt-3 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                      <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4" style={{ color: accentTheme.primary }} />Регистрация и вход через кабинет без лишней бюрократии</li>
-                      <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4" style={{ color: accentTheme.primary }} />Моментальное получение тарифов, способов оплаты и инструкций</li>
-                      <li className="flex items-start gap-3"><Check className="mt-0.5 h-4 w-4" style={{ color: accentTheme.primary }} />Поддержка, оферта и контакты доступны прямо на лендинге</li>
-                    </ul>
+                    <p className="mt-3 text-base font-semibold text-slate-900 dark:text-white">
+                      Зарегистрировался → оплатил → подключил
+                    </p>
                   </div>
                 </div>
 
@@ -630,7 +560,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                 <div className="max-w-2xl">
                   <p className="text-xs uppercase tracking-[0.32em] text-slate-500 dark:text-slate-400">премиальный доступ</p>
                   <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-slate-950 md:text-4xl dark:text-white">
-                    Всё для твоего комфорта и безопасности в сети
+                    Комфорт и безопасность в сети
                   </h2>
                 </div>
                 <div className="rounded-full border border-slate-200/70 dark:border-white/10 bg-white/85 dark:bg-white/8 px-4 py-2 text-sm text-slate-600 backdrop-blur-xl dark:text-slate-300">
@@ -676,7 +606,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
             </div>
 
             <div className="grid content-start gap-4 self-start sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-              {featuresList.slice(0, 4).map(({ icon: Icon, label, sub, desc, chips }: LandingFeatureItem, index: number) => (
+              {featuresList.slice(0, 3).map(({ icon: Icon, label, sub, desc, chips }: LandingFeatureItem, index: number) => (
                 <motion.div
                   key={label}
                   initial={{ opacity: 0, y: 16 }}
@@ -979,32 +909,14 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               <p className="text-xs uppercase tracking-[0.32em]" style={{ color: withAlpha(accentTheme.tertiary, 0.8) }}>быстрый старт</p>
               <h3 className="mt-4 text-3xl font-black tracking-[-0.04em] md:text-4xl">Премиальный сервис без технической боли</h3>
               <div className="mt-6 space-y-4 text-sm leading-7 text-slate-300 md:text-base">
-                <p>Один вход, одна подписка и понятные шаги: зарегистрировался, оплатил, подключил нужное устройство и забыл про блокировки.</p>
-                <p>Наша цель — предоставить инструмент, который просто работает. Всегда, везде и на любом устройстве.</p>
+                <p>Один аккаунт, одна подписка — и всё работает. Зарегистрировался, оплатил, подключил.</p>
+                <p>Наша цель — инструмент, который просто работает. Всегда, везде и на любом устройстве.</p>
               </div>
 
-              <div className="mt-8 space-y-4">
-                {JOURNEY_STEPS.map(({ icon: Icon, title: stepTitle, desc }, index) => (
-                  <motion.div
-                    key={stepTitle}
-                    initial={{ opacity: 0, x: 18 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.08 }}
-                    className="rounded-[26px] border border-white/10 bg-white/7 p-5"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl" style={{ backgroundColor: withAlpha(accentTheme.primary, 0.16), color: accentTheme.tertiary }}>
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="text-sm uppercase tracking-[0.22em] text-slate-400">0{index + 1}</p>
-                        <p className="mt-2 text-xl font-semibold text-white">{stepTitle}</p>
-                        <p className="mt-2 text-sm leading-6 text-slate-300">{desc}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+              <div className="mt-8 rounded-[26px] border border-white/10 bg-white/7 p-5">
+                <p className="text-base font-semibold text-white">
+                  Зарегистрировался → оплатил → подключил
+                </p>
               </div>
 
               <Button className="mt-8 h-13 rounded-full px-6 text-white" style={primaryButtonStyle} asChild>
@@ -1178,10 +1090,10 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               <div className="max-w-3xl">
                 <p className="text-xs uppercase tracking-[0.34em]" style={{ color: withAlpha(accentTheme.tertiary, 0.75) }}>{lc?.readyToConnectEyebrow ?? "ready to connect"}</p>
                 <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] md:text-5xl">
-                  {lc?.readyToConnectTitle ?? "Если честно — теперь это уже не \"лендинг\", а витрина продукта."}
+                  {lc?.readyToConnectTitle ?? "Готов подключиться?"}
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-200 md:text-base">
-                  {lc?.readyToConnectDesc ?? "Весь контент продолжает жить в админке, а визуально страница наконец ощущается как сервис, за который не стыдно брать деньги."}
+                  {lc?.readyToConnectDesc ?? "Тарифы и условия — в кабинете. Регистрация за минуту."}
                 </p>
               </div>
 
