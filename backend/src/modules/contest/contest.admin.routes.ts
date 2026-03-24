@@ -7,7 +7,7 @@ import { z } from "zod";
 import { prisma } from "../../db.js";
 import { requireAuth, requireAdminSection } from "../auth/middleware.js";
 import { getEligibleParticipants, runDraw, parseConditions } from "./contest.service.js";
-import { sendContestStartNotification } from "./contest-daily-reminder.service.js";
+import { sendContestStartNotification, sendContestDrawResults } from "./contest-daily-reminder.service.js";
 
 function asyncRoute(fn: (req: express.Request, res: express.Response) => Promise<void | express.Response>) {
   return (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -28,6 +28,8 @@ const createContestSchema = z.object({
   conditionsJson: z.string().max(2000).nullable().optional(),
   drawType: z.enum(["random", "by_days_bought", "by_payments_count", "by_referrals_count"]),
   dailyMessage: z.string().max(2000).nullable().optional(),
+  buttonText: z.string().max(200).nullable().optional(),
+  buttonUrl: z.string().max(2000).nullable().optional(),
 });
 
 const updateContestSchema = createContestSchema.partial();
@@ -84,6 +86,8 @@ contestAdminRouter.post("/", asyncRoute(async (req, res) => {
       conditionsJson: data.conditionsJson ?? null,
       drawType: data.drawType,
       dailyMessage: data.dailyMessage ?? null,
+      buttonText: data.buttonText ?? null,
+      buttonUrl: data.buttonUrl ?? null,
       status: "draft",
     },
   });
@@ -110,6 +114,8 @@ contestAdminRouter.patch("/:id", asyncRoute(async (req, res) => {
   if (data.conditionsJson !== undefined) update.conditionsJson = data.conditionsJson;
   if (data.drawType != null) update.drawType = data.drawType;
   if (data.dailyMessage !== undefined) update.dailyMessage = data.dailyMessage;
+  if (data.buttonText !== undefined) update.buttonText = data.buttonText;
+  if (data.buttonUrl !== undefined) update.buttonUrl = data.buttonUrl;
 
   const contest = await prisma.contest.update({
     where: { id },
@@ -170,6 +176,7 @@ contestAdminRouter.post("/:id/draw", asyncRoute(async (req, res) => {
   const id = req.params.id;
   const result = await runDraw(id);
   if (!result.ok) return res.status(400).json({ message: result.error });
+  sendContestDrawResults(id).catch((e) => console.error("[contest] sendContestDrawResults error:", e));
   return res.json({ message: "Розыгрыш проведён", winners: result.winners });
 }));
 

@@ -14,7 +14,7 @@ contestPublicRouter.get("/contests/active", async (_req: Request, res: Response)
     where: {
       startAt: { lte: now },
       endAt: { gte: now },
-      status: { in: ["active", "draft", "ended"] },
+      status: "active",
     },
     orderBy: { startAt: "desc" },
     select: {

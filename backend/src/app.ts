@@ -19,6 +19,10 @@ import { heleketWebhooksRouter } from "./modules/webhooks/heleket.webhooks.route
 import { botAdminRouter } from "./modules/bot-admin/bot-admin.routes.js";
 import { contestAdminRouter } from "./modules/contest/contest.admin.routes.js";
 import { contestPublicRouter } from "./modules/contest/contest.public.routes.js";
+import { adminReferralsRouter } from "./modules/admin/referrals.routes.js";
+import { trafficAbuseRouter } from "./modules/admin/traffic-abuse.routes.js";
+import { apiKeysAdminRouter } from "./modules/api-keys/api-keys.admin.routes.js";
+import { externalApiRouter } from "./modules/api-keys/external-api.routes.js";
 
 const app = express();
 
@@ -34,7 +38,7 @@ app.use(cors({
   origin: env.CORS_ORIGIN === "*" ? true : env.CORS_ORIGIN.split(",").map((s) => s.trim()).filter(Boolean),
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Api-Key"],
 }));
 // Crypto Pay и Heleket webhooks нужен raw body для проверки подписи (до express.json)
 app.use("/api/webhooks/cryptopay", express.raw({ type: "application/json" }), cryptopayWebhooksRouter);
@@ -110,11 +114,14 @@ const limiter = rateLimit({
 app.use("/api/", limiter);
 
 app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", version: "3.2.5" });
+  res.json({ status: "ok", version: "3.2.6" });
 });
 
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/admin/referrals", adminReferralsRouter);
+app.use("/api/admin/traffic-abuse", trafficAbuseRouter);
+app.use("/api/admin/api-keys", apiKeysAdminRouter);
 app.use("/api/admin/contests", contestAdminRouter);
 app.use("/api/admin/proxy", proxyAdminRouter);
 app.use("/api/admin/singbox", singboxAdminRouter);
@@ -123,6 +130,7 @@ app.use("/api/singbox-nodes", singboxAgentRouter);
 app.use("/api/client", clientRouter);
 app.use("/api/public", publicConfigRouter);
 app.use("/api/public", contestPublicRouter);
+app.use("/api/v1", externalApiRouter);
 app.use("/api/bot-admin", botAdminRouter);
 app.use("/api/webhooks", remnaWebhooksRouter);
 app.use("/api/webhooks", plategaWebhooksRouter);

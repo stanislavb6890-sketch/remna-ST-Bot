@@ -27,6 +27,10 @@ import { ContestsPage } from "@/pages/contests";
 import { AdminTicketsPage } from "@/pages/admin-tickets";
 import { BroadcastPage } from "@/pages/broadcast";
 import { AutoBroadcastPage } from "@/pages/auto-broadcast";
+import { ReferralNetworkPage } from "@/pages/referral-network";
+import { TrafficAbusePage } from "@/pages/traffic-abuse";
+import { ApiKeysPage } from "@/pages/api-keys";
+import { ApiDocsPage } from "@/pages/api-docs";
 import { ProxyPage } from "@/pages/proxy";
 import { SingboxPage } from "@/pages/singbox";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
@@ -198,6 +202,10 @@ function AppRoutes() {
         <Route path="backup" element={<ForceChangePassword><BackupPage /></ForceChangePassword>} />
         <Route path="contests" element={<ForceChangePassword><ContestsPage /></ForceChangePassword>} />
         <Route path="tickets" element={<ForceChangePassword><AdminTicketsPage /></ForceChangePassword>} />
+        <Route path="referral-network" element={<ForceChangePassword><ReferralNetworkPage /></ForceChangePassword>} />
+        <Route path="traffic-abuse" element={<ForceChangePassword><TrafficAbusePage /></ForceChangePassword>} />
+        <Route path="api-keys" element={<ForceChangePassword><ApiKeysPage /></ForceChangePassword>} />
+        <Route path="api-docs" element={<ForceChangePassword><ApiDocsPage /></ForceChangePassword>} />
       </Route>
       {/* Онбординг — вне CabinetLayout (без навбара) */}
       <Route

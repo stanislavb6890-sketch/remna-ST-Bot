@@ -1,6 +1,6 @@
 /**
  * Открывает URL платёжной страницы в браузере.
- * В Telegram Mini App — в системном браузере (openLink), иначе — в новой вкладке.
+ * В Telegram Mini App — в системном браузере (openLink), иначе — текущее окно (Safari блокирует popups).
  * Оплаты в WebView мини-аппа делать нельзя, поэтому всегда открываем снаружи.
  */
 export function openPaymentInBrowser(url: string): void {
@@ -12,6 +12,6 @@ export function openPaymentInBrowser(url: string): void {
   if (webApp?.openLink) {
     webApp.openLink(url);
   } else if (typeof window !== "undefined") {
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.location.href = url;
   }
 }

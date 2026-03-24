@@ -275,3 +275,36 @@ export function remnaRemoveAllUsersFromInternalSquad(squadUuid: string) {
     method: "DELETE",
   });
 }
+
+/** GET /api/bandwidth-stats/nodes/{uuid}/users — top users usage on node by range */
+export function remnaGetNodeUsersUsage(nodeUuid: string, start: string, end: string, topUsersLimit = 50) {
+  const params = new URLSearchParams({
+    topUsersLimit: String(topUsersLimit),
+    start,
+    end,
+  });
+  return remnaFetch<{
+    response: {
+      categories: string[];
+      sparklineData: number[];
+      topUsers: { color: string; username: string; total: number }[];
+    };
+  }>(`/api/bandwidth-stats/nodes/${nodeUuid}/users?${params}`);
+}
+
+/** GET /api/bandwidth-stats/nodes/realtime — realtime usage per node */
+export function remnaGetNodesRealtimeUsage() {
+  return remnaFetch<{
+    response: {
+      nodeUuid: string;
+      nodeName: string;
+      countryCode: string;
+      downloadBytes: number;
+      uploadBytes: number;
+      totalBytes: number;
+      downloadSpeedBps: number;
+      uploadSpeedBps: number;
+      totalSpeedBps: number;
+    }[];
+  }>("/api/bandwidth-stats/nodes/realtime");
+}

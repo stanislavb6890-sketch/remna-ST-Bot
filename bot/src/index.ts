@@ -1,5 +1,5 @@
 /**
- * STEALTHNET 3.0 — Telegram-бот
+ * STEALTHNET 3.2.6 — Telegram-бот
  * Полный функционал кабинета: главная, тарифы, профиль, пополнение, триал, реферальная ссылка, VPN.
  * Цветные кнопки: style primary / success / danger (Telegram Bot API).
  */
@@ -736,9 +736,34 @@ function formatMoney(amount: number, currency: string): string {
   return `${amount} ${sym}`;
 }
 
-/** Парсинг start-параметра: ref_CODE, c_SOURCE_CAMPAIGN или c_SOURCE_MEDIUM_CAMPAIGN, можно комбинировать ref_ABC_c_facebook_summer */
-function parseStartPayload(payload: string): { refCode?: string; utm_source?: string; utm_medium?: string; utm_campaign?: string } {
-  const out: { refCode?: string; utm_source?: string; utm_medium?: string; utm_campaign?: string } = {};
+/**
+ * Парсинг start-параметра.
+ * Новый формат (через __): ref_CODE__s_SOURCE__m_MEDIUM__k_CAMPAIGN__n_CONTENT__t_TERM
+ * Старый формат (через _c_): ref_CODE_c_SOURCE_CAMPAIGN
+ */
+function parseStartPayload(payload: string): {
+  refCode?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
+} {
+  const out: ReturnType<typeof parseStartPayload> = {};
+
+  if (payload.includes("__")) {
+    const segments = payload.split("__");
+    for (const seg of segments) {
+      if (seg.startsWith("ref_")) out.refCode = seg.slice(4);
+      else if (seg.startsWith("s_")) out.utm_source = seg.slice(2);
+      else if (seg.startsWith("m_")) out.utm_medium = seg.slice(2);
+      else if (seg.startsWith("k_")) out.utm_campaign = seg.slice(2);
+      else if (seg.startsWith("n_")) out.utm_content = seg.slice(2);
+      else if (seg.startsWith("t_")) out.utm_term = seg.slice(2);
+    }
+    return out;
+  }
+
   const cIdx = payload.indexOf("_c_");
   const refPart = cIdx >= 0 ? payload.slice(0, cIdx) : payload;
   const campaignPart = cIdx >= 0 ? payload.slice(cIdx + 3) : "";
@@ -808,6 +833,8 @@ bot.command("start", async (ctx) => {
       utm_source: parsed.utm_source,
       utm_medium: parsed.utm_medium,
       utm_campaign: parsed.utm_campaign,
+      utm_content: parsed.utm_content,
+      utm_term: parsed.utm_term,
     });
 
     setToken(from.id, auth.token);

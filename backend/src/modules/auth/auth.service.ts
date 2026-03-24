@@ -79,7 +79,7 @@ export async function ensureFirstAdmin(env: Env) {
 
   if (!process.env.INIT_ADMIN_PASSWORD) {
     console.log("========================================");
-    console.log("STEALTHNET 3.0 — первый админ создан");
+    console.log("STEALTHNET 3.2.6 — первый админ создан");
     console.log("Email:", email);
     console.log("Пароль (сохраните и смените в админке):", rawPassword);
     console.log("========================================");

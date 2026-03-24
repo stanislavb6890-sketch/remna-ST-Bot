@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useTheme, ACCENT_PALETTES } from "@/contexts/theme";
+import { useLocation } from "react-router-dom";
 
 interface OrbConfig {
   x: number;
@@ -28,8 +29,11 @@ function hexToRgb(hex: string) {
   } : { r: 100, g: 100, b: 255 };
 }
 
-export function AnimatedBackground() {
+export function AnimatedBackground({ variant = "fixed", intensity = "normal" }: { variant?: "fixed" | "absolute", intensity?: "normal" | "weak" }) {
   const { config, resolvedMode } = useTheme();
+  const location = useLocation();
+  if (location.pathname === "/admin" && variant === "fixed") return null;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<number>(0);
   const startRef = useRef<number>(0);
@@ -41,8 +45,16 @@ export function AnimatedBackground() {
     if (!ctx) return;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      if (variant === "fixed") {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      } else {
+        const rect = canvas.parentElement?.getBoundingClientRect();
+        if (rect) {
+          canvas.width = rect.width;
+          canvas.height = rect.height;
+        }
+      }
     };
     resize();
     window.addEventListener("resize", resize);
@@ -53,7 +65,7 @@ export function AnimatedBackground() {
     const rgb = hexToRgb(baseHex);
     
     const isDark = resolvedMode === "dark";
-    const bgColor = isDark ? "#0a0a10" : "#f8fafc";
+    const bgColor = variant === "fixed" ? (isDark ? "#0a0a10" : "#f8fafc") : "transparent";
     
     // В светлой теме цвета более пастельные и прозрачные
     const orbColors = ORBS.map((_, i) => {
@@ -116,7 +128,7 @@ export function AnimatedBackground() {
   }, [config.accent, resolvedMode]);
 
   return (
-    <div className="fixed inset-0 -z-50 overflow-hidden" aria-hidden>
+    <div className={`${variant === "fixed" ? "fixed" : "absolute"} inset-0 ${variant === "fixed" ? "-z-50" : "z-0"} overflow-hidden ${intensity === "weak" ? "opacity-30" : ""}`} aria-hidden>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       {/* Слой размытия (эффект матового стекла поверх фонарей) */}
       <div className="absolute inset-0 backdrop-blur-[100px] bg-background/20 pointer-events-none" />

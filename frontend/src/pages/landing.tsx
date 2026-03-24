@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { api, type PublicConfig, type PublicTariffCategory } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -177,6 +177,48 @@ const TRUST_POINTS = [
 
 const SECTION_SCROLL_OFFSET = "scroll-mt-24 md:scroll-mt-28";
 
+const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"] as const;
+const UTM_STORAGE_KEY = "stealthnet_utm";
+
+function useUtmCaptureAndBuildLink() {
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const fromUrl: Partial<Record<(typeof UTM_KEYS)[number], string>> = {};
+    for (const key of UTM_KEYS) {
+      const v = searchParams.get(key);
+      if (v) fromUrl[key] = v;
+    }
+    if (Object.keys(fromUrl).length === 0) return;
+    try {
+      const raw = localStorage.getItem(UTM_STORAGE_KEY);
+      const existing = raw ? (JSON.parse(raw) as Record<string, string>) : {};
+      localStorage.setItem(UTM_STORAGE_KEY, JSON.stringify({ ...existing, ...fromUrl }));
+    } catch {
+      // ignore corrupt storage
+    }
+  }, [searchParams]);
+
+  const buildLink = useCallback((path: string) => {
+    let stored: Record<string, string> = {};
+    try {
+      const raw = localStorage.getItem(UTM_STORAGE_KEY);
+      if (raw) stored = JSON.parse(raw) as Record<string, string>;
+    } catch {
+      // ignore
+    }
+    const params = new URLSearchParams();
+    for (const key of UTM_KEYS) {
+      const v = stored[key];
+      if (v) params.set(key, v);
+    }
+    const qs = params.toString();
+    return qs ? `${path}?${qs}` : path;
+  }, []);
+
+  return { buildLink };
+}
+
 const fadeUp = {
   initial: { opacity: 0, y: 22 },
   whileInView: { opacity: 1, y: 0 },
@@ -272,6 +314,7 @@ function getPaymentLabels(config: PublicConfig): string[] {
 }
 
 export function LandingPage({ config }: { config: PublicConfig }) {
+  const { buildLink } = useUtmCaptureAndBuildLink();
   const { resolvedMode } = useTheme();
   const lc = (config as any).landingConfig;
   const [tariffs, setTariffs] = useState<{ items: PublicTariffCategory[] } | null>(null);
@@ -501,14 +544,14 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
           <nav className="flex items-center gap-2 sm:gap-3">
             <Button variant="ghost" className="rounded-full px-4 text-slate-700 hover:bg-white/80 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10" asChild>
-              <Link to="/cabinet/login">{buttonLogin}</Link>
+              <Link to={buildLink("/cabinet/login")}>{buttonLogin}</Link>
             </Button>
             <Button
               className="rounded-full border px-5 text-white shadow-lg"
               style={primaryButtonStyle}
               asChild
             >
-              <Link to="/cabinet/register">{ctaText}</Link>
+              <Link to={buildLink("/cabinet/register")}>{ctaText}</Link>
             </Button>
           </nav>
         </div>
@@ -543,7 +586,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   style={primaryButtonStyle}
                   asChild
                 >
-                  <Link to="/cabinet/register" className="flex flex-row items-center justify-center gap-2">
+                  <Link to={buildLink("/cabinet/register")} className="flex flex-row items-center justify-center gap-2">
                     {ctaText}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
@@ -554,7 +597,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                   className="h-14 rounded-full border-slate-200/80 dark:border-white/12 bg-white/70 px-7 text-base text-slate-900 shadow-[0_12px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl hover:bg-white dark:border-white/15 dark:bg-white/8 dark:text-white dark:hover:bg-white/12"
                   asChild
                 >
-                  <Link to="/cabinet/login">{buttonLoginCabinet}</Link>
+                  <Link to={buildLink("/cabinet/login")}>{buttonLoginCabinet}</Link>
                 </Button>
               </div>
 
@@ -687,7 +730,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                       <p className="mt-2 text-lg font-semibold text-slate-950 dark:text-white">{pulseTitle}</p>
                     </div>
                     <Button className="h-12 rounded-full px-5 text-white" style={primaryButtonStyle} asChild>
-                      <Link to={lc.showTariffs ? "#tariffs" : "/cabinet/register"}>{lc.showTariffs ? buttonWatchTariffs : buttonStart}</Link>
+                      <Link to={lc.showTariffs ? "#tariffs" : buildLink("/cabinet/register")}>{lc.showTariffs ? buttonWatchTariffs : buttonStart}</Link>
                     </Button>
                   </div>
                 </div>
@@ -976,7 +1019,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
                               </div>
 
                               <Button className="mt-6 h-12 rounded-full text-white" style={primaryButtonStyle} asChild>
-                                <Link to="/cabinet/register">{buttonChooseTariff}</Link>
+                                <Link to={buildLink("/cabinet/register")}>{buttonChooseTariff}</Link>
                               </Button>
                             </div>
                           );
@@ -1086,7 +1129,7 @@ export function LandingPage({ config }: { config: PublicConfig }) {
               </div>
 
               <Button className="mt-8 h-13 rounded-full px-6 text-white" style={primaryButtonStyle} asChild>
-                <Link to="/cabinet/register">{buttonOpenCabinet}</Link>
+                <Link to={buildLink("/cabinet/register")}>{buttonOpenCabinet}</Link>
               </Button>
             </motion.div>
           </div>
@@ -1271,10 +1314,10 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
                 <Button className="h-13 rounded-full px-6 text-white" style={primaryButtonStyle} asChild>
-                  <Link to="/cabinet/register">{ctaText}</Link>
+                  <Link to={buildLink("/cabinet/register")}>{ctaText}</Link>
                 </Button>
                 <Button variant="outline" className="h-13 rounded-full border-white/20 bg-white/8 px-6 text-white hover:bg-white/12" asChild>
-                  <Link to="/cabinet/login">У меня уже есть аккаунт</Link>
+                  <Link to={buildLink("/cabinet/login")}>У меня уже есть аккаунт</Link>
                 </Button>
               </div>
             </div>
@@ -1298,10 +1341,10 @@ export function LandingPage({ config }: { config: PublicConfig }) {
 
           <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
             <Button variant="ghost" className="rounded-full text-slate-700 hover:bg-white/80 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10" asChild>
-              <Link to="/cabinet/login">{buttonLogin}</Link>
+              <Link to={buildLink("/cabinet/login")}>{buttonLogin}</Link>
             </Button>
             <Button className="rounded-full text-white" style={primaryButtonStyle} asChild>
-              <Link to="/cabinet/register">{ctaText}</Link>
+              <Link to={buildLink("/cabinet/register")}>{ctaText}</Link>
             </Button>
           </div>
         </div>

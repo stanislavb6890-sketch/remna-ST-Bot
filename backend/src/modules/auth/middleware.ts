@@ -47,6 +47,9 @@ function getSectionFromPath(normalisedPath: string): string | null {
   if (first === "default-subscription-page-config") return "settings";
   if (first === "sync") return "settings";
   if (first === "promo-groups") return "promo";
+  if (first === "referrals") return "clients";
+  if (first === "traffic-abuse") return "analytics";
+  if (first === "api-keys") return "settings";
   return first;
 }
 

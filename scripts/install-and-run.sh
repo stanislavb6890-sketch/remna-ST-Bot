@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# STEALTHNET 3.0 — установка зависимостей и запуск (выполнять в терминале, где есть node и docker)
+# STEALTHNET 3.2.6 — установка зависимостей и запуск (выполнять в терминале, где есть node и docker)
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"

@@ -478,7 +478,8 @@ export function ClientRegisterPage() {
                   onChange={handleEmailChange}
                   onBlur={handleEmailBlur}
                   required
-                  autoComplete="email"
+                  autoComplete="off"
+                  data-form-type="other"
                   className={emailError ? "border-destructive focus-visible:ring-destructive" : ""}
                 />
                 {emailError && <p className="text-xs text-destructive">{emailError}</p>}
@@ -493,7 +494,8 @@ export function ClientRegisterPage() {
                   onChange={handlePasswordChange}
                   onBlur={handlePasswordBlur}
                   required
-                  autoComplete="new-password"
+                  autoComplete="off"
+                  data-form-type="other"
                   className={passwordError ? "border-destructive focus-visible:ring-destructive" : ""}
                 />
                 {passwordError && <p className="text-xs text-destructive">{passwordError}</p>}

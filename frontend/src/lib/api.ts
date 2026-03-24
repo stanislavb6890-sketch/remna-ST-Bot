@@ -22,10 +22,12 @@ export const MANAGER_SECTIONS = [
   { key: "dashboard", label: "Дашборд" },
   { key: "remna-nodes", label: "Ноды Remna" },
   { key: "clients", label: "Клиенты" },
+  { key: "referrals", label: "Реферальная сеть" },
   { key: "tariffs", label: "Тарифы" },
   { key: "promo", label: "Промо-ссылки" },
   { key: "promo-codes", label: "Промокоды" },
   { key: "analytics", label: "Аналитика" },
+  { key: "traffic-abuse", label: "Анализ трафика" },
   { key: "marketing", label: "Маркетинг" },
   { key: "sales-report", label: "Отчёты продаж" },
   { key: "broadcast", label: "Рассылка" },
@@ -35,6 +37,7 @@ export const MANAGER_SECTIONS = [
   { key: "singbox", label: "Sing-box" },
   { key: "contests", label: "Конкурсы" },
   { key: "settings", label: "Настройки" },
+  { key: "api-keys", label: "API ключи" },
 ] as const;
 
 export interface AdminListItem {
@@ -63,6 +66,8 @@ export interface ContestFormPayload {
   conditionsJson: string | null;
   drawType: ContestDrawType;
   dailyMessage: string | null;
+  buttonText?: string | null;
+  buttonUrl?: string | null;
 }
 
 export interface ContestListItem {
@@ -79,6 +84,8 @@ export interface ContestListItem {
   conditionsJson: string | null;
   drawType: ContestDrawType;
   dailyMessage: string | null;
+  buttonText?: string | null;
+  buttonUrl?: string | null;
   status: ContestStatus;
   createdAt: string;
   updatedAt: string;
@@ -495,6 +502,53 @@ export const api = {
 
   async getSettings(token: string): Promise<AdminSettings> {
     return request("/admin/settings", { token });
+  },
+
+  async getReferralNetwork(token: string): Promise<{
+    nodes: Array<{
+      id: string;
+      name: string;
+      status: string;
+      referralsCount: number;
+      subscriptionIncome: number;
+      referralIncome: number;
+      campaign: string | null;
+    }>;
+    links: Array<{ source: string; target: string }>;
+    stats: {
+      totalUsers: number;
+      totalReferrers: number;
+      totalCampaigns: number;
+      totalSubscriptionIncome: number;
+      totalReferralIncome: number;
+    };
+  }> {
+    return request("/admin/referrals/network", { token });
+  },
+
+  async getTrafficAbuseAnalytics(
+    token: string,
+    params?: { days?: number; threshold?: number; minBytes?: number }
+  ): Promise<TrafficAbuseResponse> {
+    const qs = new URLSearchParams();
+    if (params?.days) qs.set("days", String(params.days));
+    if (params?.threshold) qs.set("threshold", String(params.threshold));
+    if (params?.minBytes) qs.set("minBytes", String(params.minBytes));
+    const q = qs.toString();
+    return request(`/admin/traffic-abuse/analytics${q ? `?${q}` : ""}`, { token });
+  },
+
+  async getApiKeys(token: string): Promise<ApiKeyListItem[]> {
+    return request("/admin/api-keys", { token });
+  },
+  async createApiKey(token: string, data: { name: string; description?: string }): Promise<ApiKeyCreated> {
+    return request("/admin/api-keys", { method: "POST", body: JSON.stringify(data), token });
+  },
+  async toggleApiKey(token: string, id: string, isActive: boolean): Promise<void> {
+    return request(`/admin/api-keys/${id}/toggle`, { method: "PATCH", body: JSON.stringify({ isActive }), token });
+  },
+  async deleteApiKey(token: string, id: string): Promise<void> {
+    return request(`/admin/api-keys/${id}`, { method: "DELETE", token });
   },
 
   async getAdmins(token: string): Promise<AdminListItem[]> {
@@ -1889,6 +1943,61 @@ export interface AdminNotificationCounters {
   totalTickets: number;
   totalTariffPayments: number;
   totalBalanceTopups: number;
+}
+
+export interface ApiKeyListItem {
+  id: string;
+  name: string;
+  description: string | null;
+  prefix: string;
+  isActive: boolean;
+  lastUsedAt: string | null;
+  createdAt: string;
+}
+
+export interface ApiKeyCreated extends ApiKeyListItem {
+  keyHash: string;
+  rawKey: string;
+}
+
+export interface TrafficAbuser {
+  uuid: string;
+  username: string;
+  email: string | null;
+  telegramId: number | null;
+  status: string;
+  trafficLimitBytes: number;
+  trafficLimitStrategy: string;
+  usedTrafficBytes: number;
+  lifetimeUsedTrafficBytes: number;
+  periodUsageBytes: number;
+  usagePercent: number;
+  perNodeUsage: { nodeName: string; bytes: number }[];
+  onlineAt: string | null;
+  lastConnectedNodeUuid: string | null;
+  createdAt: string;
+  expireAt: string;
+  abuseScore: number;
+}
+
+export interface TrafficAbuseStats {
+  totalUsers: number;
+  activeNodes: number;
+  nodesWithData?: number;
+  periodDays: number;
+  periodStart: string;
+  periodEnd: string;
+  totalTrafficPeriod: number;
+  abusersCount: number;
+  abuserTrafficTotal: number;
+  abuserTrafficPercent: number;
+  threshold: number;
+  minBytes: number;
+}
+
+export interface TrafficAbuseResponse {
+  abusers: TrafficAbuser[];
+  stats: TrafficAbuseStats;
 }
 
 export interface RemnaNode {

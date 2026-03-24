@@ -601,12 +601,30 @@ model Contest {
   status                  String    @default("draft") // draft | active | ended | drawn
   dailyMessage            String?   @map("daily_message") @db.Text
   startNotificationSentAt DateTime? @map("start_notification_sent_at")
+  lastDailyReminderAt     DateTime? @map("last_daily_reminder_at")
+  buttonText              String?   @map("button_text") @db.Text
+  buttonUrl               String?   @map("button_url") @db.Text
   createdAt               DateTime  @default(now()) @map("created_at")
   updatedAt               DateTime  @updatedAt @map("updated_at")
 
   winners ContestWinner[]
 
   @@map("contests")
+}
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  keyHash     String   @unique @map("key_hash")
+  prefix      String   @map("prefix")
+  isActive    Boolean  @default(true) @map("is_active")
+  lastUsedAt  DateTime? @map("last_used_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([keyHash], map: "api_keys_key_hash_idx")
+  @@index([prefix], map: "api_keys_prefix_idx")
+  @@map("api_keys")
 }
 
 model ContestWinner {

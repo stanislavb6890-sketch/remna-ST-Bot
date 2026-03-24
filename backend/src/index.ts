@@ -18,7 +18,7 @@ async function main() {
   startAutoRenewScheduler();
 
   const server = app.listen(env.PORT, "0.0.0.0", () => {
-    console.log(`STEALTHNET 3.0 API listening on port ${env.PORT}`);
+    console.log(`STEALTHNET 3.2.6 API listening on port ${env.PORT}`);
   });
 
   const shutdown = async () => {

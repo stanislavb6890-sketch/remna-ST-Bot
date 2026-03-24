@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Trophy, Plus, Pencil, Trash2, Loader2, Users, Shuffle, Send, Clock, X } from "lucide-react";
+import { Trophy, Plus, Pencil, Trash2, Loader2, Users, Shuffle, Send, Clock, X, MousePointerClick } from "lucide-react";
 
 const PRIZE_TYPES: { value: ContestPrizeType; label: string }[] = [
   { value: "custom", label: "Свой текст" },
@@ -75,6 +75,20 @@ function stringifyConditions(c: { minTariffDays?: number; minPaymentsCount?: num
   });
 }
 
+const BUTTON_ACTIONS = [
+  { value: "", label: "Без кнопки" },
+  { value: "cabinet", label: "Личный кабинет" },
+  { value: "referral", label: "Реферальная ссылка" },
+  { value: "custom", label: "Своя ссылка" },
+] as const;
+
+function resolveActionFromUrl(url?: string | null): string {
+  if (!url) return "";
+  if (url.includes("/cabinet")) return "cabinet";
+  if (url.includes("/referral")) return "referral";
+  return "custom";
+}
+
 const emptyForm: ContestFormPayload = {
   name: "",
   startAt: new Date().toISOString(),
@@ -88,6 +102,8 @@ const emptyForm: ContestFormPayload = {
   conditionsJson: null,
   drawType: "random",
   dailyMessage: null,
+  buttonText: null,
+  buttonUrl: null,
 };
 
 export function ContestsPage() {
@@ -104,6 +120,8 @@ export function ContestsPage() {
   const [minTariffDays, setMinTariffDays] = useState<string>("");
   const [minPaymentsCount, setMinPaymentsCount] = useState<string>("");
   const [minReferrals, setMinReferrals] = useState<string>("");
+  const [buttonAction, setButtonAction] = useState<string>("");
+  const [buttonCustomUrl, setButtonCustomUrl] = useState<string>("");
   const [detailId, setDetailId] = useState<string | null>(null);
   const [detail, setDetail] = useState<ContestDetail | null>(null);
   const [participantsPreview, setParticipantsPreview] = useState<{ total: number; participants: { clientId: string; totalDaysBought: number; paymentsCount: number; referralsCount?: number }[] } | null>(null);
@@ -143,6 +161,8 @@ export function ContestsPage() {
     setMinTariffDays("");
     setMinPaymentsCount("");
     setMinReferrals("");
+    setButtonAction("");
+    setButtonCustomUrl("");
     setShowForm(true);
   };
 
@@ -161,11 +181,16 @@ export function ContestsPage() {
       conditionsJson: c.conditionsJson,
       drawType: c.drawType as ContestDrawType,
       dailyMessage: c.dailyMessage,
+      buttonText: c.buttonText ?? null,
+      buttonUrl: c.buttonUrl ?? null,
     });
     const cond = parseConditions(c.conditionsJson);
     setMinTariffDays(cond.minTariffDays != null ? String(cond.minTariffDays) : "");
     setMinPaymentsCount(cond.minPaymentsCount != null ? String(cond.minPaymentsCount) : "");
     setMinReferrals(cond.minReferrals != null ? String(cond.minReferrals) : "");
+    const action = resolveActionFromUrl(c.buttonUrl);
+    setButtonAction(action);
+    setButtonCustomUrl(action === "custom" ? (c.buttonUrl ?? "") : "");
     setShowForm(true);
   };
 
@@ -177,11 +202,18 @@ export function ContestsPage() {
         minPaymentsCount: minPaymentsCount ? parseInt(minPaymentsCount, 10) : undefined,
         minReferrals: minReferrals ? parseInt(minReferrals, 10) : undefined,
       });
+      let resolvedButtonUrl: string | null = null;
+      if (buttonAction === "cabinet") resolvedButtonUrl = "/cabinet";
+      else if (buttonAction === "referral") resolvedButtonUrl = "/cabinet/referral";
+      else if (buttonAction === "custom" && buttonCustomUrl.trim()) resolvedButtonUrl = buttonCustomUrl.trim();
+
       const payload: ContestFormPayload = {
         ...form,
         startAt: fromFormDatetime(form.startAt),
         endAt: fromFormDatetime(form.endAt),
         conditionsJson,
+        buttonText: buttonAction ? (form.buttonText || null) : null,
+        buttonUrl: resolvedButtonUrl,
       };
       if (editingId) {
         await api.updateContest(token, editingId, payload);
@@ -405,6 +437,33 @@ export function ContestsPage() {
                 onChange={(e) => setForm((f) => ({ ...f, dailyMessage: e.target.value || null }))}
                 placeholder="Сообщение, которое бот будет отправлять каждый день во время конкурса"
               />
+            </div>
+            <div className="grid gap-2">
+              <Label className="flex items-center gap-1.5"><MousePointerClick className="h-4 w-4" /> Кнопка в сообщении (опционально)</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <select
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm"
+                  value={buttonAction}
+                  onChange={(e) => setButtonAction(e.target.value)}
+                >
+                  {BUTTON_ACTIONS.map((a) => (
+                    <option key={a.value} value={a.value}>{a.label}</option>
+                  ))}
+                </select>
+                <Input
+                  value={form.buttonText ?? ""}
+                  onChange={(e) => setForm((f) => ({ ...f, buttonText: e.target.value || null }))}
+                  placeholder="Текст кнопки"
+                  disabled={!buttonAction}
+                />
+              </div>
+              {buttonAction === "custom" && (
+                <Input
+                  value={buttonCustomUrl}
+                  onChange={(e) => setButtonCustomUrl(e.target.value)}
+                  placeholder="https://..."
+                />
+              )}
             </div>
             <DialogFooter className="pt-2">
               <Button type="button" variant="outline" onClick={() => setShowForm(false)}>

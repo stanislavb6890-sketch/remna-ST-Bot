@@ -402,7 +402,8 @@ export function ClientLoginPage() {
                   onChange={handleEmailChange}
                   onBlur={handleEmailBlur}
                   required
-                  autoComplete="username"
+                  autoComplete="off"
+                  data-form-type="other"
                   className={emailError ? "border-destructive focus-visible:ring-destructive" : ""}
                 />
                 {emailError && <p className="text-xs text-destructive">{emailError}</p>}
@@ -416,7 +417,8 @@ export function ClientLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  autoComplete="current-password"
+                  autoComplete="off"
+                  data-form-type="other"
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
